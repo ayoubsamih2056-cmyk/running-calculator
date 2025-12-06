@@ -1,30 +1,38 @@
-<!-- إضافة داخل قسم الحمية أو بعد النتائج -->
-<div id="calorieSummary" class="result-box"></div>
+<!-- DIET -->
+<div class="container hidden" id="dietSection">
+  <h2>🥗 تتبع الحمية اليومية</h2>
+
+  <label>اختر الوجبة:</label>
+  <select id="mealSelect">
+    <option value="إفطار|300">إفطار - 300 سعر حراري</option>
+    <option value="غداء|600">غداء - 600 سعر حراري</option>
+    <option value="عشاء|500">عشاء - 500 سعر حراري</option>
+    <option value="وجبة خفيفة|150">وجبة خفيفة - 150 سعر حراري</option>
+  </select>
+
+  <button onclick="addMeal()">أضف الوجبة</button>
+
+  <div id="dietBox" class="history-box"></div>
+  <div id="totalCalories" class="result-box"></div>
+</div>
 
 <script>
-// تحديث ملخص السعرات اليومي
-function updateCalorieSummary() {
-  // مجموع السعرات من الطعام
-  let totalFood = dietHistory.reduce((sum, e) => sum + e.calories, 0);
+// إضافة وجبة من الخيارات
+function addMeal() {
+  let selected = document.getElementById("mealSelect").value;
+  let [meal, cal] = selected.split("|");
+  cal = Number(cal);
 
-  // مجموع السعرات المحروقة من الجري
-  let totalBurned = runHistory.reduce((sum, e) => sum + e.calories, 0);
+  if(!meal || !cal) return alert("الرجاء اختيار وجبة صحيحة");
 
-  let remaining = totalFood - totalBurned;
-
-  let msg = `🍽 مجموع السعرات المستهلكة: <b>${totalFood} سعر حراري</b><br>
-             🏃 مجموع السعرات المحروقة: <b>${totalBurned} سعر حراري</b><br>`;
-
-  if(remaining > 0){
-    msg += `⚠ تحتاج لحرق <b>${remaining} سعر حراري</b> إضافية لتحقيق التوازن اليوم.`;
-  } else {
-    msg += `✅ لقد وصلت لهدفك اليوم أو تجاوزته!`;
-  }
-
-  document.getElementById("calorieSummary").innerHTML = msg;
+  let entry = { meal, calories: cal, date: new Date().toLocaleString() };
+  dietHistory.push(entry);
+  users[currentUser].dietHistory = dietHistory;
+  localStorage.setItem("users", JSON.stringify(users));
+  updateDiet();
 }
 
-// تعديل الدوال لتحديث الملخص تلقائيًا
+// تحديث قائمة الحمية مع أزرار تعديل وحذف
 function updateDiet() {
   let html = "", total = 0;
   dietHistory.forEach((e, index) => {
@@ -38,38 +46,27 @@ function updateDiet() {
   });
   document.getElementById("dietBox").innerHTML = html;
   document.getElementById("totalCalories").innerHTML = `<b>مجموع السعرات اليوم: ${total} سعر حراري</b>`;
-  updateCalorieSummary();
 }
 
-function calculate() {
-  if(!currentUser) return alert("يجب تسجيل الدخول أولاً");
-  let age = Number(document.getElementById("age").value);
-  let weight = Number(document.getElementById("weight").value);
-  let height = Number(document.getElementById("height").value);
-  let gender = document.getElementById("gender").value;
-  let calories = Number(document.getElementById("cal").value);
-  let speed = Number(document.getElementById("speed").value);
-  if (!age || !weight || !height || !calories || !speed) return alert("الرجاء ملء كل البيانات");
+// حذف وجبة
+function deleteMeal(index) {
+  if(confirm("هل تريد حذف هذه الوجبة؟")) {
+    dietHistory.splice(index, 1);
+    users[currentUser].dietHistory = dietHistory;
+    localStorage.setItem("users", JSON.stringify(users));
+    updateDiet();
+  }
+}
 
-  let pace = 60 / speed;
-  let distance = calories / weight;
-  let timeMinutes = (distance / speed) * 60;
-  let vo2 = (speed * 3.5).toFixed(1);
-
-  let entry = { distance: distance.toFixed(2), calories, speed, date: new Date().toLocaleString() };
-  runHistory.push(entry);
-  users[currentUser].runHistory = runHistory;
-  localStorage.setItem("users", JSON.stringify(users));
-
-  document.getElementById("result").innerHTML = `
-    ✔ المسافة المطلوبة: <b>${distance.toFixed(2)} كم</b><br>
-    ✔ الزمن المطلوب: <b>${timeMinutes.toFixed(1)} دقيقة</b><br>
-    ✔ الـ Pace: <b>${pace.toFixed(2)} دقيقة/كم</b><br>
-    ✔ VO₂ Max: <b>${vo2}</b><br>
-    ✔ السعرات لكل كيلومتر: <b>${weight}</b>
-  `;
-
-  updateHistory();
-  drawChart();
-  updateCalorieSummary(); // تحديث ملخص السعرات بعد الجري
+// تعديل وجبة
+function editMeal(index) {
+  let newCalories = prompt("أدخل عدد السعرات الجديد:", dietHistory[index].calories);
+  if(newCalories !== null) {
+    newCalories = Number(newCalories);
+    if(isNaN(newCalories) || newCalories <= 0) return alert("قيمة غير صالحة");
+    dietHistory[index].calories = newCalories;
+    users[currentUser].dietHistory = dietHistory;
+    localStorage.setItem("users", JSON.stringify(users));
+    updateDiet();
+  }
 }
