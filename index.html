@@ -1,284 +1,619 @@
 <!DOCTYPE html>
 <html lang="ar">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>RUN FIT - النسخة الاحترافية</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>RUN FIT - النسخة الاحترافية</title>
 
-<!-- Google Fonts -->
-<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">
+  <!-- Google Font -->
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">
 
-<!-- Chart.js -->
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-<style>
-  body {
-    margin: 0;
-    font-family: "Cairo", sans-serif;
-    direction: rtl;
-    background: #f5f7fb;
-  }
-
-  .navbar {
-    background: #0a7cff;
-    padding: 18px 40px;
-    color: white;
-    display: flex;
-    justify-content: space-between;
-    font-size: 20px;
-    font-weight: 700;
-  }
-
-  .navbar ul {
-    display: flex;
-    list-style: none;
-    gap: 25px;
-  }
-
-  .navbar a {
-    color: white;
-    text-decoration: none;
-    font-size: 18px;
-  }
-
-  .hero {
-    height: 75vh;
-    background: linear-gradient(135deg, #0084ff, #00c6ff);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
-    color: white;
-    padding: 30px;
-  }
-
-  .hero-content {
-    background: rgba(0,0,0,0.45);
-    padding: 40px;
-    border-radius: 15px;
-  }
-
-  .btn {
-    padding: 12px 25px;
-    display: inline-block;
-    background: #00d0ff;
-    color: white;
-    border-radius: 10px;
-    margin-top: 15px;
-    text-decoration: none;
-    font-size: 18px;
-  }
-
-  .container {
-    max-width: 700px;
-    margin: 40px auto;
-    background: white;
-    padding: 30px;
-    border-radius: 16px;
-    box-shadow: 0 5px 18px rgba(0,0,0,0.12);
-  }
-
-  input, select {
-    width: 100%;
-    padding: 12px;
-    border-radius: 10px;
-    border: 1px solid #bbb;
-    margin: 8px 0;
-  }
-
-  button {
-    width: 100%;
-    padding: 15px;
-    background: #0a7cff;
-    color: white;
-    border: none;
-    border-radius: 12px;
-    font-size: 18px;
-    cursor: pointer;
-  }
-
-  .result-box {
-    margin-top: 20px;
-    background: #e9f4ff;
-    border-right: 6px solid #008cff;
-    padding: 20px;
-    border-radius: 12px;
-  }
-
-  .history-box {
-    margin-top: 40px;
-    padding: 20px;
-    background: #fff;
-    border-radius: 12px;
-    box-shadow: 0 3px 10px rgba(0,0,0,0.1);
-  }
-
-  footer {
-    margin-top: 50px;
-    background: #0a7cff;
-    color: white;
-    padding: 20px;
-    text-align: center;
-  }
-</style>
+  <style>
+    :root{
+      --primary:#0a7cff;
+      --accent:#00d0ff;
+      --card:#ffffff;
+      --bg:#f5f7fb;
+      --muted:#6b7280;
+      --success:#16a34a;
+      --danger:#ef4444;
+      --glass: rgba(255,255,255,0.7);
+    }
+    html,body{height:100%;margin:0;font-family:"Cairo",sans-serif;direction:rtl;background:linear-gradient(180deg,#f5f7fb,#eef6ff);}
+    /* NAV */
+    .navbar{background:var(--primary);color:#fff;padding:14px 24px;display:flex;align-items:center;justify-content:space-between;box-shadow:0 6px 18px rgba(10,124,255,0.18);}
+    .navbar .brand{font-weight:700;font-size:20px}
+    .nav-links{display:flex;gap:18px;align-items:center}
+    .nav-links a{color:white;text-decoration:none;font-weight:600}
+    .nav-actions{display:flex;gap:10px}
+    .btn{background:var(--primary);color:white;padding:10px 14px;border-radius:10px;text-decoration:none;cursor:pointer;border:none;font-weight:700}
+    .btn-ghost{background:transparent;border:2px solid rgba(255,255,255,0.14);padding:8px 12px;border-radius:10px;color:white;cursor:pointer}
+    /* HERO */
+    .hero{display:flex;align-items:center;justify-content:center;padding:40px 20px;background:linear-gradient(135deg,#0084ff,#00c6ff);color:#fff}
+    .hero-card{background:rgba(0,0,0,0.35);padding:30px;border-radius:14px;max-width:900px;text-align:center}
+    .hero h1{margin:0 0 8px;font-size:28px}
+    .hero p{margin:0 0 12px;opacity:0.95}
+    /* LAYOUT */
+    .main{max-width:1100px;margin:26px auto;padding:0 16px;display:grid;grid-template-columns:1fr 380px;gap:20px;align-items:start}
+    @media(max-width:980px){.main{grid-template-columns:1fr} .right-col{order:2}}
+    .card{background:var(--card);padding:20px;border-radius:14px;box-shadow:0 6px 18px rgba(20,30,60,0.06)}
+    /* FORM */
+    label{display:block;margin-bottom:6px;font-weight:700;color:#0b2a44}
+    input,select{width:100%;padding:10px;border-radius:10px;border:1px solid #d1d5db;margin-bottom:12px;font-size:15px}
+    .small{font-size:13px;color:var(--muted)}
+    .row{display:flex;gap:10px}
+    .row .col{flex:1}
+    /* result */
+    .result{background:#e9f8ff;border-right:6px solid var(--primary);padding:16px;border-radius:10px;margin-top:12px}
+    .result b{color:#063970}
+    .suggestions{margin-top:12px;background:#fff7ed;border-right:6px solid #ffb020;padding:12px;border-radius:8px}
+    /* history & chart */
+    #chart{width:100%;height:220px}
+    .history-list{max-height:250px;overflow:auto;padding-right:6px}
+    .history-item{padding:10px;border-bottom:1px dashed #eef2f7}
+    .history-item:last-child{border-bottom:none}
+    /* gps canvas */
+    .gps-wrap{height:200px;border-radius:10px;overflow:hidden;background:#f8fafc;border:1px solid #e6eef8;display:flex;align-items:center;justify-content:center}
+    canvas#gps{width:100%;height:100%}
+    /* footer */
+    footer{margin-top:22px;text-align:center;padding:18px 8px;color:#fff;background:var(--primary);border-radius:10px;margin-left:16px;margin-right:16px}
+    /* modal */
+    .modal-back{position:fixed;inset:0;background:rgba(2,6,23,0.45);display:none;align-items:center;justify-content:center;z-index:60}
+    .modal{background:var(--card);padding:20px;border-radius:10px;max-width:420px;width:92%;box-shadow:0 12px 40px rgba(8,12,40,0.35)}
+    .flex{display:flex;gap:10px;align-items:center}
+    .badge{background:#f0f9ff;color:#0369a1;padding:6px 10px;border-radius:8px;font-weight:700}
+    .muted{color:var(--muted)}
+    /* small helpers */
+    .mt10{margin-top:10px}.mt20{margin-top:20px}.center{text-align:center}
+  </style>
 </head>
-
 <body>
 
-<!-- NAVBAR -->
-<nav class="navbar">
-  <div>RUN FIT</div>
-  <ul>
-    <li><a href="#calc">الحاسبة</a></li>
-    <li><a href="#history">السجل</a></li>
-  </ul>
-</nav>
+  <nav class="navbar">
+    <div class="brand">RUN FIT</div>
+    <div class="nav-links">
+      <a href="#calc">الحاسبة</a>
+      <a href="#history">السجل</a>
+    </div>
+    <div class="nav-actions">
+      <button class="btn-ghost" id="openLoginBtn">تسجيل / دخول</button>
+      <button class="btn" id="openRegisterBtn">إنشاء حساب</button>
+    </div>
+  </nav>
 
-<!-- HERO -->
-<header class="hero">
-  <div class="hero-content">
-    <h1>أفضل حاسبة احترافية للجري و اللياقة</h1>
-    <p>احسب السعرات، المسافة، السرعة، VO₂ Max، والـ Pace بضغطة واحدة.</p>
-    <a href="#calc" class="btn">ابدأ الآن</a>
+  <header class="hero">
+    <div class="hero-card">
+      <h1>حاسبة جري احترافية — خطتك للرشاقة تبدأ هنا</h1>
+      <p>احسب المسافة المطلوبة لحرق سعرات معينة، احصل على وقت، الــPace، VO₂ Max تقريبي، اقتراحات بعد التمرين، وسجل متقدم مع رسومات.</p>
+      <div style="margin-top:12px">
+        <a href="#calc" class="btn">ابدأ الآن</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="main">
+    <!-- LEFT: Calculator -->
+    <section class="card" id="calc">
+      <h2>حاسبة الجري المتقدمة</h2>
+
+      <div class="row mt10">
+        <div class="col">
+          <label>العمر</label>
+          <input id="age" type="number" min="10" placeholder="مثال: 30">
+        </div>
+        <div class="col">
+          <label>الجنس</label>
+          <select id="gender">
+            <option value="male">ذكر</option>
+            <option value="female">أنثى</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col">
+          <label>الوزن (كغ)</label>
+          <input id="weight" type="number" min="20" placeholder="مثال: 70">
+        </div>
+        <div class="col">
+          <label>الطول (سم)</label>
+          <input id="height" type="number" min="100" placeholder="مثال: 175">
+        </div>
+      </div>
+
+      <label>مستوى اللياقة (اختياري)</label>
+      <select id="fitnessLevel">
+        <option value="1">ضعيف</option>
+        <option value="2" selected>متوسط</option>
+        <option value="3">جيد</option>
+        <option value="4">متقدم</option>
+      </select>
+
+      <div class="row">
+        <div class="col">
+          <label>السعرات المراد حرقها (kcal)</label>
+          <input id="calories" type="number" placeholder="مثال: 300">
+        </div>
+        <div class="col">
+          <label>السرعة (كم/ساعة)</label>
+          <input id="speed" type="number" placeholder="مثال: 8">
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col">
+          <label>وحدة المسافة</label>
+          <select id="unit">
+            <option value="km" selected>كم</option>
+            <option value="mi">ميل</option>
+          </select>
+        </div>
+        <div class="col">
+          <label>وضع الهدف (Goal Mode)</label>
+          <select id="goalMode">
+            <option value="none">لا شيء</option>
+            <option value="burn">حرق سعرات محددة</option>
+            <option value="distance">الجري لمسافة محددة</option>
+            <option value="time">الجري لمدة محددة</option>
+          </select>
+        </div>
+      </div>
+
+      <div id="goalInputs" class="mt10" style="display:none">
+        <!-- dynamic by JS -->
+      </div>
+
+      <button class="btn mt10" onclick="calculate()">احسب الآن</button>
+
+      <div id="result" class="result mt10" style="display:none"></div>
+
+      <div id="suggestions" class="suggestions mt10" style="display:none"></div>
+
+      <div class="mt10 small muted">
+        يمكنك تسجيل النتائج في حسابك والمتابعة لاحقاً. واجهة تفاعلية وسجل يظهر رسم بياني للمسافات.
+      </div>
+    </section>
+
+    <!-- RIGHT: Profile / History -->
+    <aside class="right-col">
+      <div class="card">
+        <div class="flex" style="justify-content:space-between;align-items:center">
+          <div>
+            <div id="profileName"><b>زائر</b></div>
+            <div class="small muted" id="profileEmail">لم يتم تسجيل الدخول</div>
+          </div>
+          <div class="badge" id="fitnessBadge">Score: --</div>
+        </div>
+
+        <div class="mt10">
+          <button class="btn" id="saveRunBtn">حفظ النتيجة للحساب</button>
+          <button class="btn-ghost" id="clearLocalBtn">مسح السجل المحلي</button>
+        </div>
+
+        <div class="mt20">
+          <h3 class="small">محاكاة مسار GPS</h3>
+          <div class="gps-wrap mt10 card" style="padding:8px">
+            <canvas id="gps"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <div class="card mt10" id="history">
+        <h3>سجل التدريبات</h3>
+        <canvas id="chart"></canvas>
+        <div class="history-list mt10" id="historyBox"></div>
+      </div>
+    </aside>
+  </main>
+
+  <footer>
+    © 2025 RUN FIT — جميع الحقوق محفوظة — تصميم احترافي وواجهة تفاعلية
+  </footer>
+
+  <!-- modal for register/login -->
+  <div class="modal-back" id="modalBack">
+    <div class="modal" id="modalContent">
+      <div class="center">
+        <h3 id="modalTitle">تسجيل جديد</h3>
+        <p class="muted">سجل بحسابك لتتبع الحمية والسجل الشخصي.</p>
+      </div>
+
+      <div id="authForm">
+        <label>البريد الإلكتروني</label>
+        <input id="authEmail" type="email" placeholder="you@example.com">
+        <label>كلمة المرور</label>
+        <input id="authPass" type="password" placeholder="كلمة مرور">
+        <div class="row mt10">
+          <button class="btn" id="authSubmit">تسجيل</button>
+          <button class="btn-ghost" id="authCancel">إلغاء</button>
+        </div>
+        <div class="mt10 small muted center">لديك حساب؟ <a href="#" id="switchToLogin">تسجيل الدخول</a></div>
+      </div>
+
+      <div id="loginLink" style="display:none"></div>
+    </div>
   </div>
-</header>
-
-<!-- CALCULATOR -->
-<div class="container" id="calc">
-  <h2>حاسبة الجري المتقدمة</h2>
-
-  <label>العمر:</label>
-  <input type="number" id="age">
-
-  <label>الوزن (كغ):</label>
-  <input type="number" id="weight">
-
-  <label>الطول (سم):</label>
-  <input type="number" id="height">
-
-  <label>الجنس:</label>
-  <select id="gender">
-    <option value="male">ذكر</option>
-    <option value="female">أنثى</option>
-  </select>
-
-  <label>السعرات المراد حرقها:</label>
-  <input type="number" id="cal">
-
-  <label>سرعة الجري (كم/ساعة):</label>
-  <input type="number" id="speed">
-
-  <button onclick="calculate()">احسب الآن</button>
-
-  <div id="result" class="result-box"></div>
-</div>
-
-<!-- HISTORY -->
-<div class="container" id="history">
-  <h2>📌 سجل تدريباتك</h2>
-
-  <canvas id="chart" height="120"></canvas>
-
-  <div id="historyBox" class="history-box"></div>
-</div>
-
-<footer>
-  © 2025 RUN FIT — النسخة الاحترافية
-</footer>
 
 <script>
-let runHistory = JSON.parse(localStorage.getItem("runHistory") || "[]");
-let chart;
+/* -------------------------
+  Simple client-side "auth" using localStorage
+  Not secure — for demo/tracking only.
+-------------------------*/
+const openRegisterBtn = document.getElementById('openRegisterBtn');
+const openLoginBtn = document.getElementById('openLoginBtn');
+const modalBack = document.getElementById('modalBack');
+const modalTitle = document.getElementById('modalTitle');
+const authSubmit = document.getElementById('authSubmit');
+const authEmail = document.getElementById('authEmail');
+const authPass = document.getElementById('authPass');
+const authCancel = document.getElementById('authCancel');
+const switchToLogin = document.getElementById('switchToLogin');
+const profileName = document.getElementById('profileName');
+const profileEmail = document.getElementById('profileEmail');
+const fitnessBadge = document.getElementById('fitnessBadge');
 
-// MAIN FUNCTION
-function calculate() {
-  let age = Number(document.getElementById("age").value);
-  let weight = Number(document.getElementById("weight").value);
-  let height = Number(document.getElementById("height").value);
-  let gender = document.getElementById("gender").value;
-  let calories = Number(document.getElementById("cal").value);
-  let speed = Number(document.getElementById("speed").value);
+let currentUser = JSON.parse(localStorage.getItem('rf_user') || 'null'); // logged-in user object or null
+let users = JSON.parse(localStorage.getItem('rf_users') || '{}'); // email -> user object
+let runHistory = JSON.parse(localStorage.getItem('rf_history') || '[]'); // global history
+let lastCalculation = null;
 
-  if (!age || !weight || !height || !calories || !speed) {
-    document.getElementById("result").innerHTML = "⚠ الرجاء ملء كل البيانات.";
+/* AUTH UI */
+function openModal(mode='register'){
+  modalBack.style.display='flex';
+  if(mode==='register'){
+    modalTitle.innerText='تسجيل جديد';
+    authSubmit.innerText='تسجيل';
+    switchToLogin.innerText='تسجيل الدخول';
+  } else {
+    modalTitle.innerText='تسجيل الدخول';
+    authSubmit.innerText='دخول';
+    switchToLogin.innerText='ليس لدي حساب؟ إنشاء حساب';
+  }
+  authEmail.value=''; authPass.value='';
+  modalBack.onclick = (e)=> { if(e.target===modalBack) closeModal(); }
+}
+function closeModal(){ modalBack.style.display='none' }
+
+openRegisterBtn.addEventListener('click', ()=> openModal('register'));
+openLoginBtn.addEventListener('click', ()=> openModal('login'));
+switchToLogin.addEventListener('click', (e)=>{
+  e.preventDefault();
+  // toggle mode
+  if(authSubmit.innerText==='تسجيل'){ openModal('login'); } else { openModal('register'); }
+});
+
+authCancel.addEventListener('click', closeModal);
+
+authSubmit.addEventListener('click', ()=>{
+  const email = authEmail.value.trim().toLowerCase();
+  const pass = authPass.value.trim();
+  if(!validateEmail(email)){ alert('برجاء إدخال بريد إلكتروني صالح.'); return; }
+  if(pass.length < 4){ alert('كلمة المرور قصيرة جداً (أقل من 4 أحرف).'); return; }
+
+  if(authSubmit.innerText === 'تسجيل'){ // register
+    if(users[email]){ alert('هذا البريد مستخدم بالفعل، يرجى تسجيل الدخول.'); return; }
+    users[email] = { email, pass, created: new Date().toISOString(), notes: '', profile:{} };
+    localStorage.setItem('rf_users', JSON.stringify(users));
+    currentUser = users[email];
+    localStorage.setItem('rf_user', JSON.stringify(currentUser));
+    updateProfileUI();
+    closeModal();
+    alert('تم إنشاء الحساب وتسجيل الدخول بنجاح.');
+  } else { // login
+    if(!users[email] || users[email].pass !== pass){ alert('خطأ في البريد أو كلمة المرور.'); return; }
+    currentUser = users[email];
+    localStorage.setItem('rf_user', JSON.stringify(currentUser));
+    updateProfileUI();
+    closeModal();
+    alert('تم تسجيل الدخول.');
+  }
+});
+
+/* PROFILE UI */
+function updateProfileUI(){
+  if(currentUser){
+    profileName.innerHTML = `<b>${currentUser.email.split('@')[0]}</b>`;
+    profileEmail.innerText = currentUser.email;
+  } else {
+    profileName.innerHTML = `<b>زائر</b>`;
+    profileEmail.innerText = 'لم يتم تسجيل الدخول';
+  }
+}
+updateProfileUI();
+
+/* LOGIC: Goal Mode dynamic inputs */
+const goalMode = document.getElementById('goalMode');
+const goalInputs = document.getElementById('goalInputs');
+
+goalMode.addEventListener('change', ()=>{
+  const v = goalMode.value;
+  goalInputs.innerHTML = '';
+  if(v === 'distance'){
+    goalInputs.innerHTML = `<label>الرجاء إدخال المسافة الهدف (<span id="goalUnitLabel">كم</span>)</label>
+                            <input id="goalDistance" type="number" min="0" placeholder="مثال: 5">`;
+  } else if(v === 'time'){
+    goalInputs.innerHTML = `<label>الرجاء إدخال الوقت الهدف (بالدقائق)</label>
+                            <input id="goalTime" type="number" min="1" placeholder="مثال: 30">`;
+  } else {
+    goalInputs.innerHTML = '';
+  }
+  // ensure label unit follows unit select
+  updateGoalUnitLabel();
+});
+
+const unitSelect = document.getElementById('unit');
+unitSelect.addEventListener('change', updateGoalUnitLabel);
+function updateGoalUnitLabel(){
+  const lab = document.getElementById('goalUnitLabel');
+  if(lab){
+    lab.innerText = (unitSelect.value === 'km') ? 'كم' : 'ميل';
+  }
+}
+
+/* CALCULATION */
+function calculate(){
+  const age = Number(document.getElementById('age').value);
+  const gender = document.getElementById('gender').value;
+  const weight = Number(document.getElementById('weight').value);
+  const height = Number(document.getElementById('height').value);
+  const fitnessLevel = Number(document.getElementById('fitnessLevel').value);
+  const calories = Number(document.getElementById('calories').value);
+  const speed = Number(document.getElementById('speed').value);
+  const unit = unitSelect.value;
+  const gm = goalMode.value;
+
+  const resultDiv = document.getElementById('result');
+  const suggestionsDiv = document.getElementById('suggestions');
+
+  if(!age || !weight || !height || (!calories && gm === 'none') || !speed){
+    resultDiv.style.display='block';
+    resultDiv.innerHTML = `<b style="color:${'#b45309'}">⚠ الرجاء ملء الحقول الأساسية: العمر، الوزن، الطول، السعرات، السرعة.</b>`;
+    suggestionsDiv.style.display='none';
     return;
   }
 
-  // 🔹 Pace
-  let pace = 60 / speed;
+  // calorie burn estimation:
+  // We'll use MET approximation: walking/jogging MET depends on speed.
+  // Convert speed (km/h) to m/s and mph for rough MET tables. For simplicity:
+  // approximate MET = 3.5 * (speed_kmh / 3)  -> this is a simplification.
+  const speedKmh = (unit === 'km') ? speed : speed * 1.60934;
+  const met = Math.max(3.0, (speedKmh / 3) * 1.5); // clamp a bit
+  // calories burned per minute = (MET * 3.5 * weight_kg) / 200
+  const calPerMin = (met * 3.5 * weight) / 200;
 
-  // 🔹 مسافة الجري
-  let distance = calories / weight;
+  // If user provided target calories (or in goal mode)
+  let distanceKm = 0;
+  let timeMin = 0;
+  if(gm === 'burn' || gm === 'none'){
+    // distance estimate: calories / (calPerKm)
+    // calPerKm = calPerMin * minutesPerKm ; minutesPerKm = 60 / speedKmh
+    const minutesPerKm = 60 / speedKmh;
+    const calPerKm = calPerMin * minutesPerKm;
+    distanceKm = (calories / calPerKm);
+    timeMin = (distanceKm / speedKmh) * 60;
+  } else if(gm === 'distance'){
+    const gdist = Number(document.getElementById('goalDistance').value || 0);
+    if(!gdist){ resultDiv.style.display='block'; resultDiv.innerHTML='⚠ الرجاء إدخال المسافة الهدف.'; return; }
+    const distKm = (unit === 'km') ? gdist : gdist * 1.60934;
+    distanceKm = distKm;
+    const minutesPerKm = 60 / speedKmh;
+    timeMin = distKm * minutesPerKm;
+    // calories
+    const calPerMinLocal = calPerMin;
+    const totalCal = calPerMinLocal * timeMin;
+    // override calories variable for storing
+    // but keep original for display
+  } else if(gm === 'time'){
+    const gtime = Number(document.getElementById('goalTime').value || 0);
+    if(!gtime){ resultDiv.style.display='block'; resultDiv.innerHTML='⚠ الرجاء إدخال الوقت الهدف.'; return; }
+    timeMin = gtime;
+    distanceKm = (speedKmh * timeMin) / 60;
+  }
 
-  // 🔹 وقت الجري بالدقائق
-  let timeMinutes = (distance / speed) * 60;
+  // Pace = minutes per km
+  const paceMinPerKm = 60 / speedKmh;
+  // VO2 max approx using Cooper style simple estimate: vo2 = speed(m/min)*0.2 + 3.5
+  // convert speed to m/min:
+  const speedMMin = (speedKmh * 1000) / 60;
+  const vo2 = (speedMMin * 0.2 + 3.5).toFixed(1);
 
-  // 🔹 VO2 MAX
-  let vo2 = (speed * 3.5).toFixed(1);
+  // Fitness score (simple heuristic)
+  // base by VO2 and age
+  let fitnessScore = Math.max(0, Math.round((Number(vo2) / (age/30)) * (fitnessLevel/2) * 10));
+  if(fitnessScore > 100) fitnessScore = 100;
 
-  // SAVE HISTORY
-  runHistory.push({
-    distance: distance.toFixed(2),
-    calories,
-    speed,
-    date: new Date().toLocaleString()
-  });
+  // prepare final values with unit conversion
+  const distanceDisplay = (unit === 'km') ? distanceKm : (distanceKm / 1.60934);
+  const distanceLabel = (unit === 'km') ? 'كم' : 'ميل';
 
-  localStorage.setItem("runHistory", JSON.stringify(runHistory));
+  // calories burned final estimate
+  const totalCalories = (calPerMin * timeMin).toFixed(0);
 
-  // DISPLAY RESULTS
-  document.getElementById("result").innerHTML = `
-    ✔ المسافة المطلوبة: <b>${distance.toFixed(2)} كم</b><br>
-    ✔ الزمن المطلوب: <b>${timeMinutes.toFixed(1)} دقيقة</b><br>
-    ✔ الـ Pace: <b>${pace.toFixed(2)} دقيقة/كم</b><br>
-    ✔ VO₂ Max: <b>${vo2}</b><br>
-    ✔ السعرات لكل كيلومتر: <b>${weight}</b>
+  // store lastCalculation
+  lastCalculation = {
+    ts: new Date().toISOString(),
+    age, gender, weight, height, fitnessLevel, unit,
+    distanceKm: Number(distanceKm.toFixed(2)),
+    distanceDisp: Number(distanceDisplay.toFixed(2)),
+    distanceUnit: distanceLabel,
+    timeMin: Number(timeMin.toFixed(1)),
+    paceMinPerKm: Number(paceMinPerKm.toFixed(2)),
+    vo2,
+    calories: Number(totalCalories),
+    speedKmh: Number(speedKmh.toFixed(2))
+  };
+
+  // display
+  resultDiv.style.display='block';
+  resultDiv.innerHTML = `
+    ✔ <b>المسافة المطلوبة:</b> <b>${lastCalculation.distanceDisp} ${lastCalculation.distanceUnit}</b><br>
+    ✔ <b>الزمن المتوقع:</b> <b>${lastCalculation.timeMin} دقيقة</b><br>
+    ✔ <b>الـ Pace:</b> <b>${lastCalculation.paceMinPerKm} دقيقة/كم</b><br>
+    ✔ <b>VO₂ Max (تقريبي):</b> <b>${lastCalculation.vo2}</b><br>
+    ✔ <b>تقدير السعرات المحروقة:</b> <b>${lastCalculation.calories} kcal</b><br>
+    ✔ <b>السرعة (كم/ساعة):</b> <b>${lastCalculation.speedKmh} km/h</b>
   `;
 
-  updateHistory();
+  // suggestions
+  suggestionsDiv.style.display='block';
+  suggestionsDiv.innerHTML = generateSuggestions(lastCalculation);
+
+  // update badge and local history
+  fitnessBadge.innerText = `Score: ${fitnessScore}`;
+  // push to global runHistory
+  runHistory.push(lastCalculation);
+  localStorage.setItem('rf_history', JSON.stringify(runHistory));
+  renderHistory();
   drawChart();
+  drawGPSPath(lastCalculation.distanceKm);
 }
 
-// UPDATE HISTORY LIST
-function updateHistory() {
-  let html = "";
-  runHistory.forEach(e => {
-    html += `
-      <p>🏃 مسافة: <b>${e.distance} كم</b> — 🔥 سعرات: <b>${e.calories}</b> — ⚡ سرعة: <b>${e.speed}</b> — 📅 ${e.date}</p>
-      <hr>
-    `;
+/* suggestions helper */
+function generateSuggestions(calc){
+  let s = `<b>اقتراحات بعد التمرين:</b><br><ul>`;
+  s += `<li>إحماء 5-10 دقائق قبل الجري.</li>`;
+  s += `<li>استعادة سوائل: اشرب ~${Math.max(200, Math.round(calc.calories/20))} مل من الماء بعد الجري.</li>`;
+  if(calc.paceMinPerKm < 5) s += `<li>وتيرتك سريعة — تأكد من التبريد والشد العضلي بعد الجري.</li>`;
+  if(calc.vo2 >= 45) s += `<li>لياقتك جيدة — حافظ على تقدم تدريجي.</li>`;
+  s += `</ul>`;
+  s += `<div class="small muted">ملاحظة: التقديرات تقريبية وتعتمد على معادلات تبسيطية.</div>`;
+  return s;
+}
+
+/* HISTORY RENDER */
+const historyBox = document.getElementById('historyBox');
+function renderHistory(){
+  if(!runHistory || runHistory.length===0){
+    historyBox.innerHTML = `<div class="small muted">لا توجد نتائج بعد. قم بالحساب ثم اضغط حفظ.</div>`;
+    return;
+  }
+  let html = '';
+  runHistory.slice().reverse().forEach((r, idx) => {
+    html += `<div class="history-item">
+      <div><b>التاريخ:</b> ${new Date(r.ts).toLocaleString()}</div>
+      <div>مسافة: <b>${(r.distanceKm).toFixed(2)} كم</b> — وقت: <b>${r.timeMin} دقيقة</b> — 🔥 <b>${r.calories} kcal</b></div>
+    </div>`;
   });
-
-  document.getElementById("historyBox").innerHTML = html;
+  historyBox.innerHTML = html;
 }
+renderHistory();
 
-// DRAW CHART
-function drawChart() {
-  let ctx = document.getElementById("chart");
-
-  if (chart) chart.destroy();
-
+/* Chart */
+let chart;
+function drawChart(){
+  const ctx = document.getElementById('chart').getContext('2d');
+  const labels = runHistory.map(r => new Date(r.ts).toLocaleString());
+  const data = runHistory.map(r => Number(r.distanceKm));
+  if(chart) chart.destroy();
   chart = new Chart(ctx, {
-    type: "line",
+    type: 'line',
     data: {
-      labels: runHistory.map(e => e.date),
+      labels,
       datasets: [{
-        label: "المسافة (كم)",
-        data: runHistory.map(e => e.distance),
-        borderWidth: 3
+        label: 'المسافة (كم)',
+        data,
+        borderWidth: 3,
+        tension:0.3
       }]
     },
     options: {
-      scales: {
-        y: { beginAtZero: true }
-      }
+      scales: { y: { beginAtZero:true } },
+      plugins: { legend: { display: false } }
     }
   });
 }
-
-updateHistory();
 drawChart();
-</script>
 
+/* GPS Simulation: draw simple path proportional to distance */
+const gpsCanvas = document.getElementById('gps');
+const gpsCtx = gpsCanvas.getContext('2d');
+function resizeGPS(){
+  const rect = gpsCanvas.getBoundingClientRect();
+  gpsCanvas.width = rect.width * devicePixelRatio;
+  gpsCanvas.height = rect.height * devicePixelRatio;
+  gpsCtx.scale(devicePixelRatio, devicePixelRatio);
+}
+window.addEventListener('resize', resizeGPS);
+resizeGPS();
+
+function drawGPSPath(distanceKm=1){
+  // draw simple winding path length proportional to distance
+  const w = gpsCanvas.clientWidth, h = gpsCanvas.clientHeight;
+  const steps = Math.max(10, Math.min(80, Math.round(distanceKm*6)));
+  gpsCtx.clearRect(0,0,w,h);
+  // background grid
+  gpsCtx.fillStyle='#f8fafc';
+  gpsCtx.fillRect(0,0,w,h);
+
+  let x = 40, y = h/2;
+  gpsCtx.lineWidth = 3;
+  gpsCtx.strokeStyle = '#0a7cff';
+  gpsCtx.beginPath();
+  gpsCtx.moveTo(x,y);
+  for(let i=0;i<steps;i++){
+    x += (w - 80)/steps;
+    y += (Math.sin(i*0.8) * (h/2 - 30) * (0.2 + Math.random()*0.8));
+    gpsCtx.lineTo(x, Math.max(10, Math.min(h-10,y)));
+  }
+  gpsCtx.stroke();
+
+  // start & end
+  gpsCtx.fillStyle='#10b981';
+  gpsCtx.beginPath(); gpsCtx.arc(40, h/2, 6,0,Math.PI*2); gpsCtx.fill();
+  gpsCtx.fillStyle='#ef4444';
+  gpsCtx.beginPath(); gpsCtx.arc(Math.min(w-20,x), Math.max(10, Math.min(h-10,y)), 6,0,Math.PI*2); gpsCtx.fill();
+}
+
+/* save to account if logged in */
+const saveRunBtn = document.getElementById('saveRunBtn');
+saveRunBtn.addEventListener('click', ()=>{
+  if(!currentUser){ alert('يجب تسجيل الدخول أو إنشاء حساب لحفظ النتائج في الحساب.'); openModal('login'); return; }
+  if(!lastCalculation){ alert('لا توجد نتيجة لحفظها. قم بالحساب أولاً.'); return; }
+  // attach note for diet following
+  const note = prompt('أدخل ملاحظة تتعلق بالحمية أو هدف المتابعة (اختياري):', currentUser.notes || '');
+  // update user object
+  if(!currentUser.runs) currentUser.runs = [];
+  currentUser.runs.push({...lastCalculation, note: note || ''});
+  currentUser.notes = note || currentUser.notes;
+  users[currentUser.email] = currentUser;
+  localStorage.setItem('rf_users', JSON.stringify(users));
+  localStorage.setItem('rf_user', JSON.stringify(currentUser));
+  alert('تم حفظ النتيجة في حسابك.');
+});
+
+/* clear local history */
+const clearLocalBtn = document.getElementById('clearLocalBtn');
+clearLocalBtn.addEventListener('click', ()=>{
+  if(confirm('هل تريد مسح السجل المحلي (سيبقى في حسابك إذا كنت مسجلاً)؟')){
+    runHistory = [];
+    localStorage.setItem('rf_history', JSON.stringify(runHistory));
+    renderHistory();
+    if(chart) chart.destroy();
+    document.getElementById('historyBox').innerHTML = `<div class="small muted">تم المسح.</div>`;
+  }
+});
+
+/* helper email validation */
+function validateEmail(email){
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+}
+
+/* initial demo GPS */
+drawGPSPath(3);
+
+/* render initial history on load into chart */
+renderHistory();
+drawChart();
+
+/* expose some functions to console for debugging */
+window._rf = { calculate, runHistory, drawGPSPath };
+
+/* ensure responsive canvas scaling on load */
+setTimeout(()=>{ resizeGPS(); }, 500);
+
+</script>
 </body>
 </html>
