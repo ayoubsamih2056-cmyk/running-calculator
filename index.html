@@ -1,21 +1,16 @@
 <!DOCTYPE html>
 <html lang="ar">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>RUN FIT - النسخة الاحترافية مع وجبات جاهزة</title>
-
-<!-- Google Fonts -->
-<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">
-
-<!-- Chart.js -->
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>RUN FIT - النسخة الاحترافية</title>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet" />
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
 <style>
   body { margin: 0; font-family: "Cairo", sans-serif; direction: rtl; background: #f5f7fb; }
   .navbar { background: #0a7cff; padding: 18px 40px; color: white; display: flex; justify-content: space-between; font-size: 20px; font-weight: 700; }
   .navbar ul { display: flex; list-style: none; gap: 25px; }
-  .navbar a { color: white; text-decoration: none; font-size: 18px; cursor: pointer; }
+  .navbar a { color: white; text-decoration: none; font-size: 18px; }
   .container { max-width: 700px; margin: 40px auto; background: white; padding: 30px; border-radius: 16px; box-shadow: 0 5px 18px rgba(0,0,0,0.12); }
   input, select { width: 100%; padding: 12px; border-radius: 10px; border: 1px solid #bbb; margin: 8px 0; }
   button { width: 100%; padding: 15px; background: #0a7cff; color: white; border: none; border-radius: 12px; font-size: 18px; cursor: pointer; margin-top: 10px; }
@@ -25,29 +20,25 @@
   .hidden { display: none; }
 </style>
 </head>
-
 <body>
 
-<!-- NAVBAR -->
 <nav class="navbar">
   <div>RUN FIT</div>
   <ul>
-    <li><a onclick="showSection('calcSection')">حاسبة الجري</a></li>
-    <li><a onclick="showSection('historySection')">السجل</a></li>
-    <li><a onclick="showSection('dietSection')">الحمية</a></li>
-    <li><a id="logoutBtn" class="hidden" onclick="logout()">تسجيل الخروج</a></li>
+    <li><a href="#calcSection">حاسبة الجري</a></li>
+    <li><a href="#historySection">السجل</a></li>
+    <li><a href="#dietSection">الحمية</a></li>
+    <li><a href="#" id="logoutBtn" class="hidden">تسجيل الخروج</a></li>
   </ul>
 </nav>
 
-<!-- LOGIN & REGISTER -->
 <div class="container" id="authSection">
   <h2>تسجيل الدخول / إنشاء حساب جديد</h2>
-
   <label>البريد الإلكتروني:</label>
-  <input type="email" id="email">
+  <input type="email" id="email" />
 
   <label>كلمة المرور:</label>
-  <input type="password" id="password">
+  <input type="password" id="password" />
 
   <button onclick="login()">تسجيل الدخول</button>
   <button onclick="register()">إنشاء حساب جديد</button>
@@ -55,18 +46,11 @@
   <div id="authMsg" class="result-box"></div>
 </div>
 
-<!-- CALCULATOR -->
 <div class="container hidden" id="calcSection">
   <h2>حاسبة الجري المتقدمة</h2>
-
-  <label>العمر:</label>
-  <input type="number" id="age">
-
-  <label>الوزن (كغ):</label>
-  <input type="number" id="weight">
-
-  <label>الطول (سم):</label>
-  <input type="number" id="height">
+  <label>العمر:</label><input type="number" id="age" />
+  <label>الوزن (كغ):</label><input type="number" id="weight" />
+  <label>الطول (سم):</label><input type="number" id="height" />
 
   <label>الجنس:</label>
   <select id="gender">
@@ -74,48 +58,41 @@
     <option value="female">أنثى</option>
   </select>
 
-  <label>السعرات المراد حرقها:</label>
-  <input type="number" id="cal">
-
-  <label>سرعة الجري (كم/ساعة):</label>
-  <input type="number" id="speed">
-
+  <label>السعرات المراد حرقها:</label><input type="number" id="cal" />
+  <label>سرعة الجري (كم/ساعة):</label><input type="number" id="speed" />
   <button onclick="calculate()">احسب الآن</button>
 
   <div id="result" class="result-box"></div>
 </div>
 
-<!-- HISTORY -->
 <div class="container hidden" id="historySection">
   <h2>📌 سجل تدريباتك</h2>
-
   <canvas id="chart" height="120"></canvas>
-
   <div id="historyBox" class="history-box"></div>
 </div>
 
-<!-- DIET -->
 <div class="container hidden" id="dietSection">
   <h2>🥗 تتبع الحمية اليومية</h2>
 
-  <label>اختر نوع الوجبة:</label>
+  <label>اختر الوجبة:</label>
   <select id="mealSelect">
-    <option value="إفطار" data-cal="300">إفطار - 300 سعر حراري</option>
-    <option value="غداء" data-cal="600">غداء - 600 سعر حراري</option>
-    <option value="عشاء" data-cal="500">عشاء - 500 سعر حراري</option>
-    <option value="وجبة خفيفة" data-cal="200">وجبة خفيفة - 200 سعر حراري</option>
+    <option value="بيض مسلوق" data-cal="155">🥚 بيض مسلوق — 155 سعرة</option>
+    <option value="شوفان" data-cal="300">🥣 شوفان — 300 سعرة</option>
+    <option value="دجاج مشوي" data-cal="220">🍗 دجاج مشوي — 220 سعرة</option>
+    <option value="تونة" data-cal="180">🐟 تونة — 180 سعرة</option>
+    <option value="سلطة" data-cal="90">🥗 سلطة — 90 سعرة</option>
+    <option value="أرز" data-cal="210">🍚 أرز — 210 سعرة</option>
+    <option value="موز" data-cal="100">🍌 موز — 100 سعرة</option>
+    <option value="زبادي" data-cal="120">🥛 زبادي — 120 سعرة</option>
   </select>
 
   <button onclick="addMeal()">أضف الوجبة</button>
 
   <div id="dietBox" class="history-box"></div>
   <div id="totalCalories" class="result-box"></div>
-  <div id="calorieSummary" class="result-box"></div>
 </div>
 
-<footer>
-  © 2025 RUN FIT — النسخة الاحترافية
-</footer>
+<footer>© 2025 RUN FIT — النسخة الاحترافية</footer>
 
 <script>
 let currentUser = localStorage.getItem("currentUser") || null;
@@ -124,44 +101,42 @@ let runHistory = [];
 let dietHistory = [];
 let chart;
 
-// ------------------- تسجيل الحساب -------------------
 function register() {
-  let email = document.getElementById("email").value.trim();
-  let password = document.getElementById("password").value.trim();
-  if(!email || !password) return alert("الرجاء إدخال البريد وكلمة المرور");
-  if(users[email]) return alert("هذا الحساب موجود بالفعل");
+  let email = email.value.trim();
+  let password = password.value.trim();
+  if (!email || !password) return alert("الرجاء إدخال البريد وكلمة المرور");
+  if (users[email]) return alert("هذا الحساب موجود بالفعل");
   users[email] = { password, runHistory: [], dietHistory: [] };
   localStorage.setItem("users", JSON.stringify(users));
-  alert("تم إنشاء الحساب بنجاح! يمكنك تسجيل الدخول الآن.");
+  alert("تم إنشاء الحساب! يمكنك تسجيل الدخول الآن.");
 }
 
 function login() {
-  let email = document.getElementById("email").value.trim();
-  let password = document.getElementById("password").value.trim();
-  if(users[email] && users[email].password === password) {
-    currentUser = email;
+  let emailV = email.value.trim();
+  let passV = password.value.trim();
+  if (users[emailV] && users[emailV].password === passV) {
+    currentUser = emailV;
     localStorage.setItem("currentUser", currentUser);
     showApp();
-  } else alert("البريد أو كلمة المرور غير صحيحة");
+  } else alert("خطأ في تسجيل الدخول");
 }
 
-function logout() {
+document.getElementById("logoutBtn").addEventListener("click", () => {
   currentUser = null;
   localStorage.removeItem("currentUser");
-  document.getElementById("authSection").classList.remove("hidden");
-  document.getElementById("calcSection").classList.add("hidden");
-  document.getElementById("historySection").classList.add("hidden");
-  document.getElementById("dietSection").classList.add("hidden");
-  document.getElementById("logoutBtn").classList.add("hidden");
-}
+  authSection.classList.remove("hidden");
+  calcSection.classList.add("hidden");
+  historySection.classList.add("hidden");
+  dietSection.classList.add("hidden");
+  logoutBtn.classList.add("hidden");
+});
 
-// ------------------- عرض الأقسام -------------------
 function showApp() {
-  document.getElementById("authSection").classList.add("hidden");
-  document.getElementById("calcSection").classList.remove("hidden");
-  document.getElementById("historySection").classList.remove("hidden");
-  document.getElementById("dietSection").classList.remove("hidden");
-  document.getElementById("logoutBtn").classList.remove("hidden");
+  authSection.classList.add("hidden");
+  calcSection.classList.remove("hidden");
+  historySection.classList.remove("hidden");
+  dietSection.classList.remove("hidden");
+  logoutBtn.classList.remove("hidden");
 
   runHistory = users[currentUser].runHistory || [];
   dietHistory = users[currentUser].dietHistory || [];
@@ -170,100 +145,46 @@ function showApp() {
   updateDiet();
 }
 
-function showSection(id) {
-  if(!currentUser) return alert("يجب تسجيل الدخول أولاً");
-  document.getElementById("calcSection").classList.add("hidden");
-  document.getElementById("historySection").classList.add("hidden");
-  document.getElementById("dietSection").classList.add("hidden");
-  document.getElementById(id).classList.remove("hidden");
-}
-
-// ------------------- حاسبة الجري -------------------
 function calculate() {
-  if(!currentUser) return alert("يجب تسجيل الدخول أولاً");
-  let age = Number(document.getElementById("age").value);
-  let weight = Number(document.getElementById("weight").value);
-  let height = Number(document.getElementById("height").value);
-  let gender = document.getElementById("gender").value;
-  let calories = Number(document.getElementById("cal").value);
-  let speed = Number(document.getElementById("speed").value);
-  if (!age || !weight || !height || !calories || !speed) return alert("الرجاء ملء كل البيانات");
+  if (!currentUser) return alert("سجل الدخول أولاً");
+  let ageV = Number(age.value);
+  let weightV = Number(weight.value);
+  let heightV = Number(height.value);
+  let calV = Number(cal.value);
+  let speedV = Number(speed.value);
+  if (!ageV || !weightV || !heightV || !calV || !speedV) return alert("املأ كل البيانات");
 
-  let pace = 60 / speed;
-  let distance = calories / weight;
-  let timeMinutes = (distance / speed) * 60;
-  let vo2 = (speed * 3.5).toFixed(1);
+  let distance = calV / weightV;
+  let timeMinutes = (distance / speedV) * 60;
+  let pace = 60 / speedV;
+  let vo2 = (speedV * 3.5).toFixed(1);
 
-  let entry = { distance: distance.toFixed(2), calories, speed, date: new Date().toLocaleString() };
+  let entry = { distance: distance.toFixed(2), calories: calV, speed: speedV, date: new Date().toLocaleString() };
   runHistory.push(entry);
   users[currentUser].runHistory = runHistory;
   localStorage.setItem("users", JSON.stringify(users));
 
-  document.getElementById("result").innerHTML = `
-    ✔ المسافة المطلوبة: <b>${distance.toFixed(2)} كم</b><br>
-    ✔ الزمن المطلوب: <b>${timeMinutes.toFixed(1)} دقيقة</b><br>
-    ✔ الـ Pace: <b>${pace.toFixed(2)} دقيقة/كم</b><br>
-    ✔ VO₂ Max: <b>${vo2}</b><br>
-    ✔ السعرات لكل كيلومتر: <b>${weight}</b>
-  `;
+  result.innerHTML =
+    `✔ المسافة: <b>${distance.toFixed(2)} كم</b><br>
+     ✔ الزمن: <b>${timeMinutes.toFixed(1)} دقيقة</b><br>
+     ✔ الـ Pace: <b>${pace.toFixed(2)}</b><br>
+     ✔ VO₂ Max: <b>${vo2}</b>`;
 
   updateHistory();
   drawChart();
-  updateDiet();
 }
 
-// ------------------- الحمية -------------------
-  function addMeal() {
-  if(!currentUser) return alert("يجب تسجيل الدخول أولاً");
-
-  let select = document.getElementById("mealSelect");
-  let meal = select.value;
-  let cal = Number(select.options[select.selectedIndex].dataset.cal);
-
-  let entry = { meal, calories: cal, date: new Date().toLocaleString() };
-  dietHistory.push(entry);
-  users[currentUser].dietHistory = dietHistory;
-  localStorage.setItem("users", JSON.stringify(users));
-
-  updateDiet();
-}
-
-function updateDiet() {
-  let html = "", totalFood = 0;
-  dietHistory.forEach(e => {
-    html += `<p>🥗 ${e.meal}: <b>${e.calories} سعر حراري</b> — 📅 ${e.date}</p><hr>`;
-    totalFood += e.calories;
-  });
-  document.getElementById("dietBox").innerHTML = html;
-  document.getElementById("totalCalories").innerHTML = `<b>مجموع السعرات اليوم: ${totalFood} سعر حراري</b>`;
-  updateCalorieSummary(totalFood);
-}
-
-function updateCalorieSummary(totalFood) {
-  let totalBurned = runHistory.reduce((sum,e)=>sum+e.calories,0);
-  let remaining = totalFood - totalBurned;
-  let msg = `🍽 مجموع السعرات المستهلكة: <b>${totalFood} سعر حراري</b><br>
-             🏃 مجموع السعرات المحروقة: <b>${totalBurned} سعر حراري</b><br>`;
-  if(remaining > 0){
-    msg += `⚠ تحتاج لحرق <b>${remaining} سعر حراري</b> إضافية لتحقيق التوازن اليوم.`;
-  } else {
-    msg += `✅ لقد وصلت لهدفك اليوم أو تجاوزته!`;
-  }
-  document.getElementById("calorieSummary").innerHTML = msg;
-}
-
-// ------------------- سجل الجري -------------------
 function updateHistory() {
   let html = "";
   runHistory.forEach(e => {
-    html += `<p>🏃 مسافة: <b>${e.distance} كم</b> — 🔥 سعرات: <b>${e.calories}</b> — ⚡ سرعة: <b>${e.speed}</b> — 📅 ${e.date}</p><hr>`;
+    html += `<p>🏃 مسافة: <b>${e.distance} كم</b> — 🔥 <b>${e.calories}</b> — ⚡ <b>${e.speed}</b> — 📅 ${e.date}</p><hr>`;
   });
-  document.getElementById("historyBox").innerHTML = html;
+  historyBox.innerHTML = html;
 }
 
 function drawChart() {
-  let ctx = document.getElementById("chart");
-  if(chart) chart.destroy();
+  let ctx = chart;
+  if (chart) chart.destroy();
   chart = new Chart(ctx, {
     type: "line",
     data: {
@@ -274,11 +195,29 @@ function drawChart() {
   });
 }
 
-// ------------------- الحمية -------------------
+function addMeal() {
+  let select = document.getElementById("mealSelect");
+  let meal = select.value;
+  let calories = Number(select.selectedOptions[0].getAttribute("data-cal"));
 
-// ------------------- عند تحميل الصفحة -------------------
-if(currentUser) showApp();
+  let entry = { meal, calories, date: new Date().toLocaleString() };
+  dietHistory.push(entry);
+  users[currentUser].dietHistory = dietHistory;
+  localStorage.setItem("users", JSON.stringify(users));
+  updateDiet();
+}
+
+function updateDiet() {
+  let html = "", total = 0;
+  dietHistory.forEach(e => {
+    html += `<p>🥗 ${e.meal}: <b>${e.calories} سعرة</b> — 📅 ${e.date}</p><hr>`;
+    total += e.calories;
+  });
+  dietBox.innerHTML = html;
+  totalCalories.innerHTML = `<b>مجموع اليوم: ${total} سعرة</b>`;
+}
+
+if (currentUser) showApp();
 </script>
-
 </body>
 </html>
