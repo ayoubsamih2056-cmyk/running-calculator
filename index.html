@@ -1,40 +1,24 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="ar">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>سوق الموديش - منصة التصاميم</title>
+<title>Modish Market - منصة التصاميم</title>
+<!-- PayPal SDK -->
+<script src="https://www.paypal.com/sdk/js?client-id=YOUR_CLIENT_ID&currency=USD"></script>
 <style>
-body { font-family: Arial,sans-serif; margin:0; padding:0; direction: rtl; transition:0.3s; }
+body { font-family: Arial,sans-serif; margin:0; padding:0; transition:0.3s; }
 body.light { background:#fff; color:#000; }
 body.dark { background:#121212; color:#fff; }
 
-/* NAVBAR */
-.nav { 
-  background:#000; 
-  color:#FFD700; 
-  padding:8px 20px; 
-  display:flex; 
-  justify-content:space-between; 
-  align-items:center; 
-}
+.nav { background:#000; color:#FFD700; padding:8px 20px; display:flex; justify-content:space-between; align-items:center; }
 .nav-left { display:flex; align-items:center; gap:10px; }
 .nav-right { display:flex; align-items:center; }
 
-.nav button { 
-  background:#FFD700; 
-  border:none; 
-  padding:6px 10px; 
-  border-radius:6px; 
-  cursor:pointer; 
-  font-weight:bold; 
-  margin-left:5px; 
-  font-size:18px; 
-}
+.nav button { background:#FFD700; border:none; padding:6px 10px; border-radius:6px; cursor:pointer; font-weight:bold; margin-left:5px; font-size:18px; }
 .nav button:hover { background:#FFC107; }
 .nav button[title] { font-size:22px; }
 
-/* SECTIONS */
 section { display:none; padding:30px; }
 section.active { display:block; }
 
@@ -64,9 +48,9 @@ body.dark .purchase-list { background:#333; color:#fff; }
 <!-- NAVBAR -->
 <div class="nav">
   <div class="nav-left">
-    <div style="font-size:20px; font-weight:bold;">سوق الموديش</div>
+    <div style="font-size:20px; font-weight:bold;">Modish Market</div>
     <button title="الرئيسية" onclick="showSection('home')">🏠</button>
-    <button title="المصمم" onclick="showSection('designerCheck')">👤</button>
+    <button title="المصمم" onclick="showSection('designerAccess')">👤</button>
     <button title="المشتريات" onclick="showSection('purchases')">🛒</button>
   </div>
   <div class="nav-right">
@@ -74,45 +58,26 @@ body.dark .purchase-list { background:#333; color:#fff; }
   </div>
 </div>
 
-<!-- الصفحة الرئيسية -->
+<!-- HOME -->
 <section id="home" class="active">
   <h2>التصاميم المتاحة</h2>
   <div class="designs-container" id="mainDesigns"></div>
 </section>
 
-<!-- التحقق/دخول المصمم -->
-<section id="designerCheck">
+<!-- DESIGNER ACCESS -->
+<section id="designerAccess">
   <h2>الوصول للمصمم</h2>
   <div class="form-box">
-    <button onclick="gotoRegister()">فتح حساب</button>
-    <button onclick="gotoLogin()">دخول</button>
+    <input id="designerName" placeholder="الاسم">
+    <input id="designerLast" placeholder="اللقب">
+    <input id="designerEmail" type="email" placeholder="البريد الإلكتروني">
+    <input id="designerPass" type="password" placeholder="كلمة المرور">
+    <button onclick="registerDesigner()">تسجيل</button>
+    <button onclick="loginDesigner()">تسجيل دخول</button>
   </div>
 </section>
 
-<!-- تسجيل المصمم -->
-<section id="designerRegister">
-  <h2>إنشاء حساب مصمم</h2>
-  <div class="form-box">
-    <input id="regName" placeholder="الاسم">
-    <input id="regLast" placeholder="اللقب">
-    <input id="regPhone" placeholder="رقم الهاتف">
-    <input id="regEmail" placeholder="البريد الإلكتروني">
-    <input id="regPass" type="password" placeholder="كلمة المرور">
-    <button onclick="registerDesigner()">إنشاء الحساب</button>
-  </div>
-</section>
-
-<!-- تسجيل الدخول -->
-<section id="designerLogin">
-  <h2>دخول المصمم</h2>
-  <div class="form-box">
-    <input id="loginEmail" placeholder="البريد الإلكتروني">
-    <input id="loginPass" type="password" placeholder="كلمة المرور">
-    <button onclick="loginDesigner()">دخول</button>
-  </div>
-</section>
-
-<!-- صفحة المصمم -->
+<!-- DESIGNER PAGE -->
 <section id="designer">
   <h2>ملف المصمم</h2>
   <div class="user-info" id="userInfo"></div>
@@ -137,113 +102,153 @@ body.dark .purchase-list { background:#333; color:#fff; }
   <div class="designs-container" id="designerDesigns"></div>
 </section>
 
-<!-- المشتريات -->
+<!-- PURCHASES -->
 <section id="purchases">
   <h2>المشتريات</h2>
   <div class="purchase-list" id="purchaseList"></div>
 </section>
 
 <script>
-let data = JSON.parse(localStorage.getItem("data")) || {
-  designers: [], logged: null, designs: [], purchases:[]
-};
+let data = JSON.parse(localStorage.getItem("data")) || { designers: [], logged: null, designs: [], purchases: [] };
 
 function save(){ localStorage.setItem("data",JSON.stringify(data)); }
+function toggleTheme(){ document.body.classList.toggle("dark"); document.body.classList.toggle("light"); }
+function showSection(id){ document.querySelectorAll("section").forEach(s=>s.classList.remove("active")); document.getElementById(id).classList.add("active"); refresh(); }
 
-function showSection(id){
-  document.querySelectorAll("section").forEach(s=>s.classList.remove("active"));
-  document.getElementById(id).classList.add("active");
-  refresh();
-}
-
-function gotoRegister(){ showSection("designerRegister"); }
-function gotoLogin(){ showSection("designerLogin"); }
-
+// تسجيل مصمم
 function registerDesigner(){
-  let name=document.getElementById("regName").value;
-  let last=document.getElementById("regLast").value;
-  let phone=document.getElementById("regPhone").value;
-  let email=document.getElementById("regEmail").value;
-  let pass=document.getElementById("regPass").value;
+  let name=document.getElementById("designerName").value;
+  let last=document.getElementById("designerLast").value;
+  let email=document.getElementById("designerEmail").value;
+  let pass=document.getElementById("designerPass").value;
 
   if(!email || !pass){ alert("البريد وكلمة المرور مطلوبة"); return; }
-  data.designers.push({name,last,phone,email,pass});
+  if(data.designers.find(d=>d.email===email)){ alert("الحساب موجود مسبقًا"); return; }
+
+  data.designers.push({name,last,email,pass});
+  data.logged=email;
   save();
   alert("تم إنشاء الحساب!");
-  showSection("designerCheck");
+  showSection("designer");
+  loadDesignerPage();
 }
 
+// تسجيل دخول مصمم
 function loginDesigner(){
-  let email=document.getElementById("loginEmail").value;
-  let pass=document.getElementById("loginPass").value;
-
-  let d=data.designers.find(d=>d.email===email && d.pass===pass);
-  if(!d){ alert("بيانات الدخول خاطئة"); return; }
+  let email=document.getElementById("designerEmail").value;
+  let pass=document.getElementById("designerPass").value;
+  let designer = data.designers.find(d=>d.email===email && d.pass===pass);
+  if(!designer){ alert("خطأ في البريد أو كلمة المرور"); return; }
 
   data.logged=email;
   save();
   showSection("designer");
+  loadDesignerPage();
 }
 
+// تحميل صفحة المصمم
+function loadDesignerPage(){
+  if(!data.logged) return;
+  let designer = data.designers.find(d=>d.email===data.logged);
+  if(!designer) return;
+
+  document.getElementById("userInfo").innerHTML = `
+    <strong>الاسم الكامل:</strong> ${designer.name} ${designer.last} <br>
+    <strong>البريد:</strong> ${designer.email} <br>
+    <strong>كلمة المرور:</strong> ${designer.pass}
+  `;
+
+  let myD = data.designs.filter(x=>x.owner===data.logged);
+  document.getElementById("designerDesigns").innerHTML="";
+  let total = myD.reduce((a,b)=>a+Number(b.buyers),0);
+  document.getElementById("totalSales").innerText = total;
+
+  myD.forEach((d,i)=>{
+    document.getElementById("designerDesigns").innerHTML += `
+      <div class="design-card">
+        ${d.name}<br>
+        ${d.price} ${d.currency}<br>
+        عدد الشراة: ${d.buyers || 0}<br>
+        <div id="paypal-designer-${i}"></div>
+      </div>`;
+    createPayPalButton(`paypal-designer-${i}`, d);
+  });
+
+  loadMainDesigns();
+  loadPurchases();
+}
+
+// إضافة تصميم
 function addDesign(){
   let name=document.getElementById("designName").value;
   let image=document.getElementById("designImage").files[0] ? document.getElementById("designImage").files[0].name : "image.png";
   let price=document.getElementById("designPrice").value;
   let currency=document.getElementById("currency").value;
 
+  if(!name || !price){ alert("يرجى ملء جميع الحقول"); return; }
+
   data.designs.push({name,image,price,currency,buyers:0,owner:data.logged});
   save();
-  refresh();
+  loadDesignerPage();
 }
 
-function buyDesign(name, price, currency){
-  const sales = JSON.parse(localStorage.getItem("salesLog")||"[]");
-  const date = new Date().toLocaleString();
-  sales.push({design:name, price, currency, date});
-  localStorage.setItem("salesLog", JSON.stringify(sales));
+// صفحة الرئيسية
+function loadMainDesigns(){
+  let container=document.getElementById("mainDesigns");
+  container.innerHTML="";
+  data.designs.forEach((d,i)=>{
+    container.innerHTML += `
+      <div class="design-card">
+        ${d.name}<br>
+        ${d.price} ${d.currency}<br>
+        عدد الشراة: ${d.buyers}<br>
+        <div id="paypal-home-${i}"></div>
+      </div>`;
+    createPayPalButton(`paypal-home-${i}`, d);
+  });
+}
 
-  const d = data.designs.find(x=>x.name===name);
-  if(d){ d.buyers++; }
-  data.logged && (data.designers.find(x=>x.email===data.logged).totalSales = (data.designers.find(x=>x.email===data.logged).totalSales||0)+1);
-
+// شراء تصميم
+function buyDesign(design){
+  design.buyers++;
+  data.purchases.push({name:design.name,price:design.price,currency:design.currency});
   save();
-  refresh();
-  alert(`تم شراء التصميم: ${name} مقابل ${price} ${currency}`);
+  loadDesignerPage();
+}
+
+// PayPal
+function createPayPalButton(containerId, design){
+  paypal.Buttons({
+    createOrder: function(dataPP, actions){
+      return actions.order.create({
+        purchase_units:[{
+          amount:{ value: design.price, currency_code: design.currency },
+          description: design.name
+        }]
+      });
+    },
+    onApprove: function(dataPP, actions){
+      return actions.order.capture().then(function(details){
+        alert("تم الدفع بنجاح!");
+        buyDesign(design);
+      });
+    }
+  }).render("#"+containerId);
+}
+
+// تحميل المشتريات
+function loadPurchases(){
+  let pur=document.getElementById("purchaseList");
+  pur.innerHTML="<h3>المشتريات:</h3>";
+  data.purchases.forEach((p,i)=>{
+    pur.innerHTML += `${i+1}. ${p.name} - ${p.price} ${p.currency}<br>`;
+  });
 }
 
 function refresh(){
-  // الصفحة الرئيسية
-  let home=document.getElementById("mainDesigns");
-  home.innerHTML="";
-  data.designs.forEach(d=>{
-    home.innerHTML += `<div class="design-card">${d.name}<br>${d.price} ${d.currency}<br>عدد الشراة: ${d.buyers}<br><button onclick="buyDesign('${d.name}','${d.price}','${d.currency}')">شراء الآن</button></div>`;
-  });
-
-  // صفحة المصمم
-  if(data.logged){
-    let myD = data.designs.filter(x=>x.owner===data.logged);
-    document.getElementById("designerDesigns").innerHTML="";
-    let total = myD.reduce((a,b)=>a+Number(b.buyers),0);
-    document.getElementById("totalSales").innerText = total;
-    document.getElementById("userInfo").innerHTML=`<strong>البريد:</strong> ${data.logged}`;
-
-    myD.forEach(d=>{
-      document.getElementById("designerDesigns").innerHTML += `<div class="design-card">${d.name}<br>${d.price} ${d.currency}<br>عدد الشراة: ${d.buyers}<br></div>`;
-    });
-  }
-
-  // المشتريات
-  let pur=document.getElementById("purchaseList");
-  pur.innerHTML="";
-  const sales = JSON.parse(localStorage.getItem("salesLog")||"[]");
-  sales.forEach((s,i)=>{
-    pur.innerHTML += `${i+1}. ${s.design} - ${s.price} ${s.currency} - ${s.date}<br>`;
-  });
+  loadMainDesigns();
+  loadPurchases();
 }
-
-// الوضع الليلي
-function toggleTheme(){ document.body.classList.toggle("dark"); document.body.classList.toggle("light"); }
-
 refresh();
 </script>
 </body>
