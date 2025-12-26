@@ -30,11 +30,18 @@ header{
 .page{display:none;padding:15px}
 .page.active{display:block}
 
+.card{
+  background:#fff;
+  padding:15px;
+  border-radius:14px;
+  margin-bottom:15px;
+  box-shadow:0 4px 10px rgba(0,0,0,.08);
+}
+
 .profile-box{
   background:#fff;
   border-radius:16px;
   padding:20px;
-  box-shadow:0 4px 10px rgba(0,0,0,.1);
   position:relative;
 }
 
@@ -60,20 +67,7 @@ header{
 h3{text-align:center;margin:10px 0 5px}
 p{text-align:center;color:#777}
 
-button{
-  width:100%;
-  padding:12px;
-  border:none;
-  border-radius:10px;
-  font-weight:bold;
-  cursor:pointer;
-  margin-top:10px;
-}
-
-.primary{background:var(--yellow)}
-.outline{background:#fff;border:2px solid var(--yellow)}
-
-input{
+input,button{
   width:100%;
   padding:10px;
   margin-top:8px;
@@ -81,14 +75,14 @@ input{
   border:1px solid #ccc;
 }
 
-.orders{margin-top:20px}
-.order{
-  background:#f9f9f9;
-  padding:10px;
-  border-radius:10px;
-  margin-bottom:10px;
-  font-size:14px;
+button{
+  border:none;
+  font-weight:bold;
+  cursor:pointer;
 }
+
+.primary{background:var(--yellow)}
+.outline{background:#fff;border:2px solid var(--yellow)}
 
 .bottom-nav{
   position:fixed;
@@ -116,8 +110,42 @@ input{
 
 <header>MALL</header>
 
+<!-- HOME -->
+<div id="home" class="page active">
+  <div class="card">
+    <h3>🔍 محرك البحث</h3>
+    <input placeholder="ابحث عن منتج أو متجر">
+  </div>
+
+  <div class="card">
+    <h3>🔥 عروض اليوم</h3>
+    <p>أفضل العروض ستظهر هنا</p>
+  </div>
+</div>
+
+<!-- STORES -->
+<div id="stores" class="page">
+  <div class="card">
+    <h3>🛍️ متجر الملابس</h3>
+    <p>ملابس رجالية ونسائية</p>
+  </div>
+
+  <div class="card">
+    <h3>📱 متجر الإلكترونيات</h3>
+    <p>هواتف – سماعات – إكسسوارات</p>
+  </div>
+</div>
+
+<!-- CART -->
+<div id="cart" class="page">
+  <div class="card">
+    <h3>🛒 سلة المشتريات</h3>
+    <p>لم تضف أي منتج بعد</p>
+  </div>
+</div>
+
 <!-- PROFILE -->
-<div id="profile" class="page active">
+<div id="profile" class="page">
   <div class="profile-box">
 
     <div class="settings" onclick="showInfo()">⚙️</div>
@@ -126,31 +154,22 @@ input{
     <h3 id="userName">زائر</h3>
     <p id="userStatus">لم تقم بإنشاء حساب</p>
 
-    <!-- REGISTER FORM -->
+    <!-- REGISTER -->
     <div id="registerForm">
       <input id="fname" placeholder="الاسم">
       <input id="lname" placeholder="النسب">
-      <input id="phone" type="tel" placeholder="رقم الهاتف">
+      <input id="phone" placeholder="رقم الهاتف">
       <input id="email" type="email" placeholder="الإيميل">
       <input id="password" type="password" placeholder="كلمة السر">
       <button class="primary" onclick="createAccount()">إنشاء حساب</button>
     </div>
 
     <!-- ORDERS -->
-    <div id="orders" style="display:none" class="orders">
+    <div id="orders" style="display:none">
       <h4>📦 طلباتي</h4>
 
-      <div class="order">
-        🛒 طلب #1203<br>
-        💰 150 درهم<br>
-        🚚 قيد التوصيل
-      </div>
-
-      <div class="order">
-        🛒 طلب #1189<br>
-        💰 80 درهم<br>
-        ✅ تم التسليم
-      </div>
+      <div class="card">🛒 طلب #1203 – 🚚 قيد التوصيل</div>
+      <div class="card">🛒 طلب #1189 – ✅ تم التسليم</div>
 
       <button class="outline" onclick="logout()">تسجيل الخروج</button>
     </div>
@@ -160,48 +179,44 @@ input{
 
 <!-- NAV -->
 <div class="bottom-nav">
-  <button>🏠<br>الرئيسية</button>
-  <button>🛍️<br>المتاجر</button>
-  <button>🛒<br>السلة</button>
-  <button class="active">👤<br>حسابي</button>
+  <button class="active" onclick="showPage('home',this)">🏠<br>الرئيسية</button>
+  <button onclick="showPage('stores',this)">🛍️<br>المتاجر</button>
+  <button onclick="showPage('cart',this)">🛒<br>السلة</button>
+  <button onclick="showPage('profile',this)">👤<br>حسابي</button>
 </div>
 
 <script>
+function showPage(id, btn){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+
+  document.querySelectorAll('.bottom-nav button').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+}
+
 function createAccount(){
-  const f = fname.value.trim();
-  const l = lname.value.trim();
-  const ph = phone.value.trim();
-  const e = email.value.trim();
-  const p = password.value.trim();
-
-  if(!f || !l || !ph || !e || !p){
-    alert("❌ جميع الحقول مطلوبة");
+  if(!fname.value||!lname.value||!phone.value||!email.value||!password.value){
+    alert("جميع الحقول مطلوبة");
     return;
   }
 
-  if(ph.length < 8){
-    alert("❌ رقم الهاتف غير صحيح");
-    return;
-  }
+  localStorage.setItem("user",JSON.stringify({
+    fname:fname.value,
+    lname:lname.value,
+    phone:phone.value,
+    email:email.value
+  }));
 
-  const user = {
-    fname: f,
-    lname: l,
-    phone: ph,
-    email: e
-  };
-
-  localStorage.setItem("user", JSON.stringify(user));
   loadUser();
 }
 
 function loadUser(){
-  const user = JSON.parse(localStorage.getItem("user"));
+  const user=JSON.parse(localStorage.getItem("user"));
   if(user){
-    userName.innerText = user.fname + " " + user.lname;
-    userStatus.innerText = "📞 " + user.phone;
-    registerForm.style.display = "none";
-    orders.style.display = "block";
+    userName.innerText=user.fname+" "+user.lname;
+    userStatus.innerText="📞 "+user.phone;
+    registerForm.style.display="none";
+    orders.style.display="block";
   }
 }
 
@@ -211,16 +226,8 @@ function logout(){
 }
 
 function showInfo(){
-  const user = JSON.parse(localStorage.getItem("user"));
-  if(user){
-    alert(
-      "👤 " + user.fname + " " + user.lname +
-      "\n📞 " + user.phone +
-      "\n📧 " + user.email
-    );
-  }else{
-    alert("لم يتم إنشاء حساب بعد");
-  }
+  const u=JSON.parse(localStorage.getItem("user"));
+  if(u) alert("👤 "+u.fname+" "+u.lname+"\n📞 "+u.phone+"\n📧 "+u.email);
 }
 
 loadUser();
