@@ -1,212 +1,204 @@
 <!DOCTYPE html>
 <html lang="ar">
 <head>
-  <meta charset="UTF-8">
-  <title>MALL APP</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8">
+<title>MALL APP</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <style>
-    :root {
-      --black:#0b0b0b;
-      --yellow:#f5c400;
-      --gray:#f3f3f3;
-    }
+<style>
+:root{
+  --black:#0b0b0b;
+  --yellow:#f5c400;
+  --gray:#f3f3f3;
+}
+*{box-sizing:border-box;font-family:Arial}
 
-    * { box-sizing: border-box; font-family: Arial, sans-serif; }
+body{
+  margin:0;
+  background:var(--gray);
+  padding-bottom:70px;
+}
 
-    body {
-      margin: 0;
-      background: var(--gray);
-      padding-bottom: 70px;
-    }
+header{
+  background:var(--black);
+  color:#fff;
+  padding:14px;
+  text-align:center;
+  font-weight:bold;
+}
 
-    header {
-      background: var(--black);
-      color: white;
-      padding: 14px;
-      text-align: center;
-      font-weight: bold;
-    }
+.page{display:none;padding:15px}
+.page.active{display:block}
 
-    .page { display: none; padding: 15px; }
-    .page.active { display: block; }
+.profile-box{
+  background:#fff;
+  border-radius:16px;
+  padding:20px;
+  box-shadow:0 4px 10px rgba(0,0,0,.1);
+  position:relative;
+}
 
-    /* PROFILE */
-    .profile-box {
-      background: white;
-      border-radius: 16px;
-      padding: 20px;
-      box-shadow: 0 4px 10px rgba(0,0,0,.08);
-      position: relative;
-      text-align: center;
-    }
+.settings{
+  position:absolute;
+  top:15px;
+  right:15px;
+  font-size:22px;
+  cursor:pointer;
+}
 
-    .settings-icon {
-      position: absolute;
-      top: 15px;
-      right: 15px;
-      font-size: 22px;
-      cursor: pointer;
-    }
+.avatar{
+  width:90px;height:90px;
+  border-radius:50%;
+  background:#ddd;
+  margin:10px auto;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:40px;
+}
 
-    .avatar {
-      width: 90px;
-      height: 90px;
-      border-radius: 50%;
-      background: #ddd;
-      margin: 10px auto;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 40px;
-    }
+h3{text-align:center;margin:10px 0 5px}
+p{text-align:center;color:#777}
 
-    .profile-box h3 { margin: 8px 0 4px; }
-    .profile-box p { color: #777; margin-bottom: 15px; }
+button{
+  width:100%;
+  padding:12px;
+  border:none;
+  border-radius:10px;
+  font-weight:bold;
+  cursor:pointer;
+  margin-top:10px;
+}
 
-    .profile-btn {
-      width: 100%;
-      padding: 12px;
-      border-radius: 10px;
-      border: none;
-      margin-bottom: 10px;
-      font-weight: bold;
-      cursor: pointer;
-      background: var(--yellow);
-    }
+.primary{background:var(--yellow)}
+.outline{background:#fff;border:2px solid var(--yellow)}
 
-    .profile-btn.outline {
-      background: white;
-      border: 2px solid var(--yellow);
-    }
+input{
+  width:100%;
+  padding:10px;
+  margin-top:8px;
+  border-radius:8px;
+  border:1px solid #ccc;
+}
 
-    /* ORDERS */
-    .orders {
-      margin-top: 20px;
-      text-align: left;
-    }
+.orders{margin-top:20px}
+.order{
+  background:#f9f9f9;
+  padding:10px;
+  border-radius:10px;
+  margin-bottom:10px;
+  font-size:14px;
+}
 
-    .order-card {
-      background: #f9f9f9;
-      border-radius: 10px;
-      padding: 10px;
-      margin-bottom: 10px;
-      font-size: 14px;
-    }
+.bottom-nav{
+  position:fixed;
+  bottom:0;left:0;right:0;
+  background:#fff;
+  border-top:1px solid #ddd;
+  display:flex;
+  justify-content:space-around;
+  padding:8px 0;
+}
 
-    /* BOTTOM NAV */
-    .bottom-nav {
-      position: fixed;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      background: white;
-      border-top: 1px solid #ddd;
-      display: flex;
-      justify-content: space-around;
-      padding: 8px 0;
-    }
-
-    .bottom-nav button {
-      background: none;
-      border: none;
-      font-size: 12px;
-      color: #555;
-      cursor: pointer;
-    }
-
-    .bottom-nav button.active {
-      color: var(--yellow);
-      font-weight: bold;
-    }
-  </style>
+.bottom-nav button{
+  background:none;
+  border:none;
+  font-size:12px;
+}
+.bottom-nav button.active{
+  color:var(--yellow);
+  font-weight:bold;
+}
+</style>
 </head>
 
 <body>
 
 <header>MALL</header>
 
-<!-- PROFILE PAGE -->
+<!-- PROFILE -->
 <div id="profile" class="page active">
   <div class="profile-box">
 
-    <div class="settings-icon" onclick="openSettings()">⚙️</div>
+    <div class="settings" onclick="alert('الإعدادات قيد التطوير')">⚙️</div>
 
     <div class="avatar">👤</div>
-    <h3 id="username">زائر</h3>
-    <p id="status">لم تقم بتسجيل الدخول</p>
+    <h3 id="userName">زائر</h3>
+    <p id="userStatus">لم تقم بإنشاء حساب</p>
 
-    <!-- AUTH BUTTONS -->
-    <div id="authButtons">
-      <button class="profile-btn" onclick="login()">تسجيل الدخول</button>
-      <button class="profile-btn outline" onclick="register()">إنشاء حساب</button>
+    <!-- REGISTER FORM -->
+    <div id="registerForm">
+      <input id="fname" placeholder="الاسم">
+      <input id="lname" placeholder="النسب">
+      <input id="email" type="email" placeholder="الإيميل">
+      <input id="password" type="password" placeholder="كلمة السر">
+      <button class="primary" onclick="createAccount()">إنشاء حساب</button>
     </div>
 
     <!-- ORDERS -->
-    <div id="ordersSection" class="orders" style="display:none;">
+    <div id="orders" style="display:none" class="orders">
       <h4>📦 طلباتي</h4>
 
-      <div class="order-card">
-        🛒 طلب #1023<br>
-        💰 120 $<br>
+      <div class="order">
+        🛒 طلب #1203<br>
+        💰 150 درهم<br>
         🚚 قيد التوصيل
       </div>
 
-      <div class="order-card">
-        🛒 طلب #1011<br>
-        💰 60 $<br>
+      <div class="order">
+        🛒 طلب #1189<br>
+        💰 80 درهم<br>
         ✅ تم التسليم
       </div>
 
-      <button class="profile-btn outline" onclick="logout()">تسجيل الخروج</button>
+      <button class="outline" onclick="logout()">تسجيل الخروج</button>
     </div>
 
   </div>
 </div>
 
-<!-- BOTTOM NAV -->
+<!-- NAV -->
 <div class="bottom-nav">
-  <button onclick="showPage('home', this)">🏠<br>الرئيسية</button>
-  <button onclick="showPage('stores', this)">🛍️<br>المتاجر</button>
-  <button onclick="showPage('cart', this)">🛒<br>السلة</button>
-  <button class="active" onclick="showPage('profile', this)">👤<br>حسابي</button>
+  <button>🏠<br>الرئيسية</button>
+  <button>🛍️<br>المتاجر</button>
+  <button>🛒<br>السلة</button>
+  <button class="active">👤<br>حسابي</button>
 </div>
 
 <script>
-  let loggedIn = false;
+function createAccount(){
+  const f = fname.value.trim();
+  const l = lname.value.trim();
+  const e = email.value.trim();
+  const p = password.value.trim();
 
-  function register() {
-    loggedIn = true;
-    document.getElementById("username").innerText = "Ayoub";
-    document.getElementById("status").innerText = "حساب مفعل";
-    document.getElementById("authButtons").style.display = "none";
-    document.getElementById("ordersSection").style.display = "block";
+  if(!f || !l || !e || !p){
+    alert("❌ جميع الحقول مطلوبة");
+    return;
   }
 
-  function login() {
-    register(); // نفس السلوك مؤقتًا
-  }
+  const user = {fname:f,lname:l,email:e};
+  localStorage.setItem("user", JSON.stringify(user));
 
-  function logout() {
-    loggedIn = false;
-    document.getElementById("username").innerText = "زائر";
-    document.getElementById("status").innerText = "لم تقم بتسجيل الدخول";
-    document.getElementById("authButtons").style.display = "block";
-    document.getElementById("ordersSection").style.display = "none";
-  }
+  loadUser();
+}
 
-  function openSettings() {
-    alert("⚙️ صفحة الإعدادات – قريبًا");
+function loadUser(){
+  const user = JSON.parse(localStorage.getItem("user"));
+  if(user){
+    userName.innerText = user.fname + " " + user.lname;
+    userStatus.innerText = "حساب مفعل";
+    registerForm.style.display = "none";
+    orders.style.display = "block";
   }
+}
 
-  function showPage(id, btn) {
-    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-    const page = document.getElementById(id);
-    if (page) page.classList.add('active');
+function logout(){
+  localStorage.removeItem("user");
+  location.reload();
+}
 
-    document.querySelectorAll('.bottom-nav button').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-  }
+loadUser();
 </script>
 
 </body>
