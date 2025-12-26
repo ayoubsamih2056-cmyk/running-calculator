@@ -31,68 +31,22 @@
     .page { display: none; padding: 15px; }
     .page.active { display: block; }
 
-    /* SEARCH */
-    .search-box {
-      background: white;
-      border-radius: 12px;
-      padding: 10px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      margin-bottom: 15px;
-      box-shadow: 0 3px 8px rgba(0,0,0,.08);
-    }
-
-    .search-box input {
-      border: none;
-      outline: none;
-      width: 100%;
-      font-size: 14px;
-    }
-
-    .banner {
-      background: linear-gradient(135deg, #000, #333);
-      color: white;
-      padding: 20px;
-      border-radius: 15px;
-      margin-bottom: 15px;
-    }
-
-    .banner h2 { margin: 0; color: var(--yellow); }
-
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(2,1fr);
-      gap: 12px;
-    }
-
-    .card {
-      background: white;
-      border-radius: 15px;
-      padding: 10px;
-      box-shadow: 0 4px 10px rgba(0,0,0,.08);
-      text-align: center;
-    }
-
-    .card img {
-      width: 100%;
-      border-radius: 10px;
-    }
-
-    .card h4 {
-      font-size: 14px;
-      margin: 6px 0;
-    }
-
-    .price { font-weight: bold; }
-
     /* PROFILE */
     .profile-box {
       background: white;
       border-radius: 16px;
       padding: 20px;
-      text-align: center;
       box-shadow: 0 4px 10px rgba(0,0,0,.08);
+      position: relative;
+      text-align: center;
+    }
+
+    .settings-icon {
+      position: absolute;
+      top: 15px;
+      right: 15px;
+      font-size: 22px;
+      cursor: pointer;
     }
 
     .avatar {
@@ -100,7 +54,7 @@
       height: 90px;
       border-radius: 50%;
       background: #ddd;
-      margin: auto;
+      margin: 10px auto;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -108,12 +62,12 @@
     }
 
     .profile-box h3 {
-      margin: 10px 0 4px;
+      margin: 8px 0 4px;
     }
 
     .profile-box p {
       color: #777;
-      margin: 0 0 15px;
+      margin-bottom: 15px;
     }
 
     .profile-btn {
@@ -164,36 +118,13 @@
 
 <header>MALL</header>
 
-<!-- HOME -->
-<div id="home" class="page active">
-  <div class="banner">
-    <h2>مرحبا 👋</h2>
-    <p>إبحث عن أي منتج بسهولة</p>
-  </div>
-
-  <div class="search-box">
-    🔍
-    <input type="text" placeholder="إبحث عن منتج..." onkeyup="searchProducts(this.value)">
-  </div>
-
-  <div class="grid" id="products"></div>
-</div>
-
-<!-- STORES -->
-<div id="stores" class="page">
-  <h3>🛍️ المتاجر</h3>
-  <p>قريبًا</p>
-</div>
-
-<!-- CART -->
-<div id="cart" class="page">
-  <h3>🛒 السلة</h3>
-  <p>لا توجد منتجات</p>
-</div>
-
-<!-- PROFILE -->
-<div id="profile" class="page">
+<!-- PROFILE PAGE -->
+<div id="profile" class="page active">
   <div class="profile-box">
+
+    <!-- SETTINGS ICON -->
+    <div class="settings-icon" onclick="openSettings()">⚙️</div>
+
     <div class="avatar">👤</div>
     <h3>زائر</h3>
     <p>لم تقم بتسجيل الدخول</p>
@@ -201,48 +132,18 @@
     <button class="profile-btn">تسجيل الدخول</button>
     <button class="profile-btn outline">إنشاء حساب</button>
     <button class="profile-btn outline">طلباتي</button>
-    <button class="profile-btn outline">الإعدادات</button>
   </div>
 </div>
 
 <!-- BOTTOM NAV -->
 <div class="bottom-nav">
-  <button class="active" onclick="showPage('home', this)">🏠<br>الرئيسية</button>
+  <button onclick="showPage('home', this)">🏠<br>الرئيسية</button>
   <button onclick="showPage('stores', this)">🛍️<br>المتاجر</button>
   <button onclick="showPage('cart', this)">🛒<br>السلة</button>
-  <button onclick="showPage('profile', this)">👤<br>حسابي</button>
+  <button class="active" onclick="showPage('profile', this)">👤<br>حسابي</button>
 </div>
 
 <script>
-  const productsData = [
-    {name:"T-Shirt", price:20, img:"https://via.placeholder.com/300"},
-    {name:"Shoes", price:45, img:"https://via.placeholder.com/300"},
-    {name:"Watch", price:60, img:"https://via.placeholder.com/300"},
-    {name:"Headphones", price:35, img:"https://via.placeholder.com/300"}
-  ];
-
-  const productsDiv = document.getElementById("products");
-
-  function renderProducts(list) {
-    productsDiv.innerHTML = "";
-    list.forEach(p => {
-      productsDiv.innerHTML += `
-        <div class="card">
-          <img src="${p.img}">
-          <h4>${p.name}</h4>
-          <div class="price">${p.price} $</div>
-        </div>
-      `;
-    });
-  }
-
-  function searchProducts(text) {
-    const result = productsData.filter(p =>
-      p.name.toLowerCase().includes(text.toLowerCase())
-    );
-    renderProducts(result);
-  }
-
   function showPage(id, btn) {
     document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
     document.getElementById(id).classList.add('active');
@@ -251,7 +152,9 @@
     btn.classList.add('active');
   }
 
-  renderProducts(productsData);
+  function openSettings() {
+    alert("⚙️ صفحة الإعدادات – سيتم تطويرها لاحقًا");
+  }
 </script>
 
 </body>
