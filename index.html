@@ -61,14 +61,8 @@
       font-size: 40px;
     }
 
-    .profile-box h3 {
-      margin: 8px 0 4px;
-    }
-
-    .profile-box p {
-      color: #777;
-      margin-bottom: 15px;
-    }
+    .profile-box h3 { margin: 8px 0 4px; }
+    .profile-box p { color: #777; margin-bottom: 15px; }
 
     .profile-btn {
       width: 100%;
@@ -84,6 +78,20 @@
     .profile-btn.outline {
       background: white;
       border: 2px solid var(--yellow);
+    }
+
+    /* ORDERS */
+    .orders {
+      margin-top: 20px;
+      text-align: left;
+    }
+
+    .order-card {
+      background: #f9f9f9;
+      border-radius: 10px;
+      padding: 10px;
+      margin-bottom: 10px;
+      font-size: 14px;
     }
 
     /* BOTTOM NAV */
@@ -122,16 +130,37 @@
 <div id="profile" class="page active">
   <div class="profile-box">
 
-    <!-- SETTINGS ICON -->
     <div class="settings-icon" onclick="openSettings()">⚙️</div>
 
     <div class="avatar">👤</div>
-    <h3>زائر</h3>
-    <p>لم تقم بتسجيل الدخول</p>
+    <h3 id="username">زائر</h3>
+    <p id="status">لم تقم بتسجيل الدخول</p>
 
-    <button class="profile-btn">تسجيل الدخول</button>
-    <button class="profile-btn outline">إنشاء حساب</button>
-    <button class="profile-btn outline">طلباتي</button>
+    <!-- AUTH BUTTONS -->
+    <div id="authButtons">
+      <button class="profile-btn" onclick="login()">تسجيل الدخول</button>
+      <button class="profile-btn outline" onclick="register()">إنشاء حساب</button>
+    </div>
+
+    <!-- ORDERS -->
+    <div id="ordersSection" class="orders" style="display:none;">
+      <h4>📦 طلباتي</h4>
+
+      <div class="order-card">
+        🛒 طلب #1023<br>
+        💰 120 $<br>
+        🚚 قيد التوصيل
+      </div>
+
+      <div class="order-card">
+        🛒 طلب #1011<br>
+        💰 60 $<br>
+        ✅ تم التسليم
+      </div>
+
+      <button class="profile-btn outline" onclick="logout()">تسجيل الخروج</button>
+    </div>
+
   </div>
 </div>
 
@@ -144,16 +173,39 @@
 </div>
 
 <script>
-  function showPage(id, btn) {
-    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-    document.getElementById(id).classList.add('active');
+  let loggedIn = false;
 
-    document.querySelectorAll('.bottom-nav button').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
+  function register() {
+    loggedIn = true;
+    document.getElementById("username").innerText = "Ayoub";
+    document.getElementById("status").innerText = "حساب مفعل";
+    document.getElementById("authButtons").style.display = "none";
+    document.getElementById("ordersSection").style.display = "block";
+  }
+
+  function login() {
+    register(); // نفس السلوك مؤقتًا
+  }
+
+  function logout() {
+    loggedIn = false;
+    document.getElementById("username").innerText = "زائر";
+    document.getElementById("status").innerText = "لم تقم بتسجيل الدخول";
+    document.getElementById("authButtons").style.display = "block";
+    document.getElementById("ordersSection").style.display = "none";
   }
 
   function openSettings() {
-    alert("⚙️ صفحة الإعدادات – سيتم تطويرها لاحقًا");
+    alert("⚙️ صفحة الإعدادات – قريبًا");
+  }
+
+  function showPage(id, btn) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    const page = document.getElementById(id);
+    if (page) page.classList.add('active');
+
+    document.querySelectorAll('.bottom-nav button').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
   }
 </script>
 
