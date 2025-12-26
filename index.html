@@ -84,8 +84,52 @@
       margin: 6px 0;
     }
 
-    .price {
+    .price { font-weight: bold; }
+
+    /* PROFILE */
+    .profile-box {
+      background: white;
+      border-radius: 16px;
+      padding: 20px;
+      text-align: center;
+      box-shadow: 0 4px 10px rgba(0,0,0,.08);
+    }
+
+    .avatar {
+      width: 90px;
+      height: 90px;
+      border-radius: 50%;
+      background: #ddd;
+      margin: auto;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 40px;
+    }
+
+    .profile-box h3 {
+      margin: 10px 0 4px;
+    }
+
+    .profile-box p {
+      color: #777;
+      margin: 0 0 15px;
+    }
+
+    .profile-btn {
+      width: 100%;
+      padding: 12px;
+      border-radius: 10px;
+      border: none;
+      margin-bottom: 10px;
       font-weight: bold;
+      cursor: pointer;
+      background: var(--yellow);
+    }
+
+    .profile-btn.outline {
+      background: white;
+      border: 2px solid var(--yellow);
     }
 
     /* BOTTOM NAV */
@@ -122,13 +166,11 @@
 
 <!-- HOME -->
 <div id="home" class="page active">
-
   <div class="banner">
     <h2>مرحبا 👋</h2>
     <p>إبحث عن أي منتج بسهولة</p>
   </div>
 
-  <!-- SEARCH -->
   <div class="search-box">
     🔍
     <input type="text" placeholder="إبحث عن منتج..." onkeyup="searchProducts(this.value)">
@@ -151,8 +193,16 @@
 
 <!-- PROFILE -->
 <div id="profile" class="page">
-  <h3>👤 حسابي</h3>
-  <p>تسجيل / دخول</p>
+  <div class="profile-box">
+    <div class="avatar">👤</div>
+    <h3>زائر</h3>
+    <p>لم تقم بتسجيل الدخول</p>
+
+    <button class="profile-btn">تسجيل الدخول</button>
+    <button class="profile-btn outline">إنشاء حساب</button>
+    <button class="profile-btn outline">طلباتي</button>
+    <button class="profile-btn outline">الإعدادات</button>
+  </div>
 </div>
 
 <!-- BOTTOM NAV -->
@@ -168,9 +218,7 @@
     {name:"T-Shirt", price:20, img:"https://via.placeholder.com/300"},
     {name:"Shoes", price:45, img:"https://via.placeholder.com/300"},
     {name:"Watch", price:60, img:"https://via.placeholder.com/300"},
-    {name:"Headphones", price:35, img:"https://via.placeholder.com/300"},
-    {name:"Jacket", price:80, img:"https://via.placeholder.com/300"},
-    {name:"Cap", price:15, img:"https://via.placeholder.com/300"}
+    {name:"Headphones", price:35, img:"https://via.placeholder.com/300"}
   ];
 
   const productsDiv = document.getElementById("products");
@@ -208,4 +256,3 @@
 
 </body>
 </html>
-
