@@ -7,15 +7,12 @@
 
   <style>
     :root {
-      --black: #0b0b0b;
-      --yellow: #f5c400;
-      --gray: #f3f3f3;
+      --black:#0b0b0b;
+      --yellow:#f5c400;
+      --gray:#f3f3f3;
     }
 
-    * {
-      box-sizing: border-box;
-      font-family: Arial, sans-serif;
-    }
+    * { box-sizing: border-box; font-family: Arial, sans-serif; }
 
     body {
       margin: 0;
@@ -23,48 +20,49 @@
       padding-bottom: 70px;
     }
 
-    /* HEADER */
     header {
       background: var(--black);
       color: white;
       padding: 14px;
       text-align: center;
-      font-size: 18px;
       font-weight: bold;
     }
 
-    /* PAGES */
-    .page {
-      display: none;
-      padding: 15px;
+    .page { display: none; padding: 15px; }
+    .page.active { display: block; }
+
+    /* SEARCH */
+    .search-box {
+      background: white;
+      border-radius: 12px;
+      padding: 10px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 15px;
+      box-shadow: 0 3px 8px rgba(0,0,0,.08);
     }
 
-    .page.active {
-      display: block;
+    .search-box input {
+      border: none;
+      outline: none;
+      width: 100%;
+      font-size: 14px;
     }
 
-    /* HOME */
     .banner {
       background: linear-gradient(135deg, #000, #333);
       color: white;
       padding: 20px;
       border-radius: 15px;
-      margin-bottom: 20px;
+      margin-bottom: 15px;
     }
 
-    .banner h2 {
-      margin: 0;
-      color: var(--yellow);
-    }
-
-    .section-title {
-      font-weight: bold;
-      margin-bottom: 10px;
-    }
+    .banner h2 { margin: 0; color: var(--yellow); }
 
     .grid {
       display: grid;
-      grid-template-columns: repeat(2, 1fr);
+      grid-template-columns: repeat(2,1fr);
       gap: 12px;
     }
 
@@ -72,7 +70,7 @@
       background: white;
       border-radius: 15px;
       padding: 10px;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+      box-shadow: 0 4px 10px rgba(0,0,0,.08);
       text-align: center;
     }
 
@@ -82,13 +80,12 @@
     }
 
     .card h4 {
-      margin: 8px 0 4px;
       font-size: 14px;
+      margin: 6px 0;
     }
 
     .price {
       font-weight: bold;
-      color: var(--black);
     }
 
     /* BOTTOM NAV */
@@ -108,8 +105,8 @@
       background: none;
       border: none;
       font-size: 12px;
-      cursor: pointer;
       color: #555;
+      cursor: pointer;
     }
 
     .bottom-nav button.active {
@@ -125,56 +122,37 @@
 
 <!-- HOME -->
 <div id="home" class="page active">
+
   <div class="banner">
-    <h2>مرحبا بك 👋</h2>
-    <p>أفضل المتاجر والمنتجات في تطبيق واحد</p>
+    <h2>مرحبا 👋</h2>
+    <p>إبحث عن أي منتج بسهولة</p>
   </div>
 
-  <div class="section-title">🔥 منتجات رائجة</div>
-
-  <div class="grid">
-    <div class="card">
-      <img src="https://via.placeholder.com/300">
-      <h4>T-Shirt</h4>
-      <div class="price">20 $</div>
-    </div>
-
-    <div class="card">
-      <img src="https://via.placeholder.com/300">
-      <h4>Shoes</h4>
-      <div class="price">45 $</div>
-    </div>
-
-    <div class="card">
-      <img src="https://via.placeholder.com/300">
-      <h4>Watch</h4>
-      <div class="price">60 $</div>
-    </div>
-
-    <div class="card">
-      <img src="https://via.placeholder.com/300">
-      <h4>Headphones</h4>
-      <div class="price">35 $</div>
-    </div>
+  <!-- SEARCH -->
+  <div class="search-box">
+    🔍
+    <input type="text" placeholder="إبحث عن منتج..." onkeyup="searchProducts(this.value)">
   </div>
+
+  <div class="grid" id="products"></div>
 </div>
 
 <!-- STORES -->
 <div id="stores" class="page">
   <h3>🛍️ المتاجر</h3>
-  <p>قريبًا: قائمة المتاجر والبائعين</p>
+  <p>قريبًا</p>
 </div>
 
 <!-- CART -->
 <div id="cart" class="page">
   <h3>🛒 السلة</h3>
-  <p>لم تتم إضافة منتجات بعد</p>
+  <p>لا توجد منتجات</p>
 </div>
 
 <!-- PROFILE -->
 <div id="profile" class="page">
   <h3>👤 حسابي</h3>
-  <p>تسجيل الدخول / إنشاء حساب</p>
+  <p>تسجيل / دخول</p>
 </div>
 
 <!-- BOTTOM NAV -->
@@ -186,14 +164,48 @@
 </div>
 
 <script>
-  function showPage(pageId, btn) {
+  const productsData = [
+    {name:"T-Shirt", price:20, img:"https://via.placeholder.com/300"},
+    {name:"Shoes", price:45, img:"https://via.placeholder.com/300"},
+    {name:"Watch", price:60, img:"https://via.placeholder.com/300"},
+    {name:"Headphones", price:35, img:"https://via.placeholder.com/300"},
+    {name:"Jacket", price:80, img:"https://via.placeholder.com/300"},
+    {name:"Cap", price:15, img:"https://via.placeholder.com/300"}
+  ];
+
+  const productsDiv = document.getElementById("products");
+
+  function renderProducts(list) {
+    productsDiv.innerHTML = "";
+    list.forEach(p => {
+      productsDiv.innerHTML += `
+        <div class="card">
+          <img src="${p.img}">
+          <h4>${p.name}</h4>
+          <div class="price">${p.price} $</div>
+        </div>
+      `;
+    });
+  }
+
+  function searchProducts(text) {
+    const result = productsData.filter(p =>
+      p.name.toLowerCase().includes(text.toLowerCase())
+    );
+    renderProducts(result);
+  }
+
+  function showPage(id, btn) {
     document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-    document.getElementById(pageId).classList.add('active');
+    document.getElementById(id).classList.add('active');
 
     document.querySelectorAll('.bottom-nav button').forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
   }
+
+  renderProducts(productsData);
 </script>
 
 </body>
 </html>
+
