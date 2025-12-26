@@ -1,1 +1,191 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+<meta charset="UTF-8">
+<title>MALL APP</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+:root{
+  --black:#0b0b0b;
+  --yellow:#f5c400;
+  --gray:#f3f3f3;
+}
+*{box-sizing:border-box;font-family:Arial}
+
+body{margin:0;background:var(--gray);padding-bottom:70px}
+header{background:var(--black);color:#fff;padding:14px;text-align:center;font-weight:bold}
+.page{display:none;padding:15px}
+.page.active{display:block}
+
+.card{
+  background:#fff;padding:15px;border-radius:14px;
+  margin-bottom:15px;box-shadow:0 4px 10px rgba(0,0,0,.08)
+}
+
+.profile-box{background:#fff;border-radius:16px;padding:20px;position:relative}
+.settings{position:absolute;top:15px;right:15px;font-size:22px;cursor:pointer}
+.avatar{
+  width:90px;height:90px;border-radius:50%;background:#ddd;
+  margin:10px auto;display:flex;align-items:center;justify-content:center;font-size:40px
+}
+h3{text-align:center}
+p{text-align:center;color:#777}
+
+input,button{
+  width:100%;padding:10px;margin-top:8px;
+  border-radius:8px;border:1px solid #ccc
+}
+button{border:none;font-weight:bold;cursor:pointer}
+.primary{background:var(--yellow)}
+.outline{background:#fff;border:2px solid var(--yellow)}
+
+.check{
+  display:flex;align-items:center;gap:6px;
+  font-size:14px;margin-top:6px;color:#555
+}
+
+.bottom-nav{
+  position:fixed;bottom:0;left:0;right:0;
+  background:#fff;border-top:1px solid #ddd;
+  display:flex;justify-content:space-around;padding:8px 0
+}
+.bottom-nav button{background:none;border:none;font-size:12px}
+.bottom-nav button.active{color:var(--yellow);font-weight:bold}
+</style>
+</head>
+
+<body>
+
+<header>MALL</header>
+
+<div id="home" class="page active">
+  <div class="card">
+    <input placeholder="🔍 ابحث عن منتج أو متجر">
+  </div>
+</div>
+
+<div id="stores" class="page">
+  <div class="card">🛍️ متجر الملابس</div>
+</div>
+
+<div id="cart" class="page">
+  <div class="card">🛒 سلتك فارغة</div>
+</div>
+
+<div id="profile" class="page">
+  <div class="profile-box">
+
+    <div class="settings" onclick="showInfo()">⚙️</div>
+    <div class="avatar">👤</div>
+    <h3 id="userName">مرحبا</h3>
+    <p id="userStatus">يرجى تسجيل الدخول أو إنشاء حساب</p>
+
+    <div id="actions">
+      <button class="primary" onclick="showLogin()">تسجيل الدخول</button>
+      <button class="outline" onclick="showRegister()">إنشاء حساب</button>
+    </div>
+
+    <!-- LOGIN -->
+    <div id="loginForm" style="display:none">
+      <input id="loginEmail" type="email" placeholder="الإيميل">
+      <input id="loginPass" type="password" placeholder="كلمة السر">
+
+      <label class="check">
+        <input type="checkbox" onclick="togglePass('loginPass',this)">
+        إظهار كلمة المرور
+      </label>
+
+      <button class="primary" onclick="login()">دخول</button>
+    </div>
+
+    <!-- REGISTER -->
+    <div id="registerForm" style="display:none">
+      <input id="fname" placeholder="الاسم">
+      <input id="lname" placeholder="النسب">
+      <input id="phone" placeholder="رقم الهاتف">
+      <input id="email" type="email" placeholder="الإيميل">
+      <input id="password" type="password" placeholder="كلمة السر">
+
+      <label class="check">
+        <input type="checkbox" onclick="togglePass('password',this)">
+        إظهار كلمة المرور
+      </label>
+
+      <button class="primary" onclick="createAccount()">إنشاء حساب</button>
+    </div>
+
+    <div id="orders" style="display:none">
+      <h4>📦 طلباتي</h4>
+      <div class="card">🛒 طلب #1203 – قيد التوصيل</div>
+      <button class="outline" onclick="logout()">تسجيل الخروج</button>
+    </div>
+
+  </div>
+</div>
+
+<div class="bottom-nav">
+  <button class="active" onclick="showPage('home',this)">🏠<br>الرئيسية</button>
+  <button onclick="showPage('stores',this)">🛍️<br>المتاجر</button>
+  <button onclick="showPage('cart',this)">🛒<br>السلة</button>
+  <button onclick="showPage('profile',this)">👤<br>حسابي</button>
+</div>
+
+<script>
+function showPage(id,btn){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  document.querySelectorAll('.bottom-nav button').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+}
+
+function showLogin(){loginForm.style.display="block";registerForm.style.display="none"}
+function showRegister(){registerForm.style.display="block";loginForm.style.display="none"}
+
+function togglePass(id,el){
+  document.getElementById(id).type = el.checked ? "text" : "password";
+}
+
+function createAccount(){
+  localStorage.setItem("user",JSON.stringify({
+    fname:fname.value,lname:lname.value,phone:phone.value,
+    email:email.value,password:password.value
+  }));
+  localStorage.setItem("loggedIn","true");
+  loadUser();
+}
+
+function login(){
+  const u=JSON.parse(localStorage.getItem("user"));
+  if(!u||loginEmail.value!==u.email||loginPass.value!==u.password){
+    alert("بيانات غير صحيحة");return;
+  }
+  localStorage.setItem("loggedIn","true");
+  loadUser();
+}
+
+function loadUser(){
+  const u=JSON.parse(localStorage.getItem("user"));
+  if(u&&localStorage.getItem("loggedIn")==="true"){
+    userName.innerText=u.fname+" "+u.lname;
+    userStatus.innerText="📞 "+u.phone;
+    actions.style.display="none";
+    loginForm.style.display="none";
+    registerForm.style.display="none";
+    orders.style.display="block";
+  }
+}
+
+function logout(){localStorage.removeItem("loggedIn");location.reload()}
+function showInfo(){
+  const u=JSON.parse(localStorage.getItem("user"));
+  if(u) alert(u.fname+" "+u.lname+"\n"+u.email+"\n"+u.phone);
+}
+
+loadUser();
+</script>
+
+</body>
+</html>
 <!DOCTYPE html> <html lang="ar"> <head> <meta charset="UTF-8"> <title>MALL APP</title> <meta name="viewport" content="width=device-width, initial-scale=1.0"> <style> :root{ --black:#0b0b0b; --yellow:#f5c400; --gray:#f3f3f3; } *{box-sizing:border-box;font-family:Arial} body{margin:0;background:var(--gray);padding-bottom:70px} header{background:var(--black);color:#fff;padding:14px;text-align:center;font-weight:bold} .page{display:none;padding:15px} .page.active{display:block} .card{ background:#fff;padding:15px;border-radius:14px; margin-bottom:15px;box-shadow:0 4px 10px rgba(0,0,0,.08) } input,button{ width:100%;padding:10px;margin-top:8px; border-radius:8px;border:1px solid #ccc } button{border:none;font-weight:bold;cursor:pointer} .primary{background:var(--yellow)} .outline{background:#fff;border:2px solid var(--yellow)} .profile-box{background:#fff;border-radius:16px;padding:20px;position:relative} .settings{position:absolute;top:15px;right:15px;font-size:22px;cursor:pointer} .avatar{ width:90px;height:90px;border-radius:50%;background:#ddd; margin:10px auto;display:flex;align-items:center;justify-content:center;font-size:40px } h3,p{text-align:center} .bottom-nav{ position:fixed;bottom:0;left:0;right:0; background:#fff;border-top:1px solid #ddd; display:flex;justify-content:space-around;padding:8px 0 } .bottom-nav button{background:none;border:none;font-size:12px} .bottom-nav button.active{color:var(--yellow);font-weight:bold} .check{ display:flex;align-items:center;gap:6px; font-size:14px;color:#555;margin-top:6px } </style> </head> <body> <header>MALL</header> <!-- HOME --> <div id="home" class="page active"> <div class="card"> <input placeholder="🔍 ابحث عن منتج أو متجر"> </div> </div> <!-- STORE --> <div id="stores" class="page"> <h3>🏪 المتجر</h3> <div class="card"> <h4>🧥 ملابس</h4> <button class="primary" onclick="openStoreOptions('ملابس')">الدخول</button> </div> <div class="card"> <h4>💻 إلكترونيات</h4> <button class="primary" onclick="openStoreOptions('إلكترونيات')">الدخول</button> </div> <!-- OPTIONS --> <div id="storeOptions" class="card" style="display:none"> <h4 id="storeTitle"></h4> <button class="outline" onclick="linkWithAccount()">🔗 ربط بالحساب</button> <button class="outline" onclick="openIndependent()">🏪 متجر مستقل</button> </div> <!-- INDEPENDENT STORE --> <div id="independentForm" class="card" style="display:none"> <h4>📝 متجر مستقل</h4> <input id="s_fname" placeholder="الاسم"> <input id="s_lname" placeholder="النسب"> <input id="s_email" type="email" placeholder="الإيميل"> <input id="s_pass" type="password" placeholder="كلمة السر"> <label class="check"> <input type="checkbox" onclick="togglePass('s_pass',this)"> إظهار كلمة السر </label> <button class="primary" onclick="createStore()">إنشاء المتجر</button> </div> </div> <!-- CART --> <div id="cart" class="page"> <h3>🛒 السلة</h3> <div id="cartItems"></div> <h4 id="total"></h4> </div> <!-- PROFILE --> <div id="profile" class="page"> <div class="profile-box"> <div class="settings" onclick="showInfo()">⚙️</div> <div class="avatar">👤</div> <h3 id="userName">مرحبا</h3> <p id="userStatus">يرجى تسجيل الدخول أو إنشاء حساب</p> <div id="actions"> <button class="primary" onclick="showLogin()">تسجيل الدخول</button> <button class="outline" onclick="showRegister()">إنشاء حساب</button> </div> <!-- LOGIN --> <div id="loginForm" style="display:none"> <input id="loginEmail" type="email" placeholder="الإيميل"> <input id="loginPass" type="password" placeholder="كلمة السر"> <label class="check"> <input type="checkbox" onclick="togglePass('loginPass',this)"> إظهار كلمة المرور </label> <button class="primary" onclick="login()">دخول</button> </div> <!-- REGISTER --> <div id="registerForm" style="display:none"> <input id="fname" placeholder="الاسم"> <input id="lname" placeholder="النسب"> <input id="phone" placeholder="رقم الهاتف"> <input id="email" type="email" placeholder="الإيميل"> <input id="password" type="password" placeholder="كلمة السر"> <label class="check"> <input type="checkbox" onclick="togglePass('password',this)"> إظهار كلمة المرور </label> <button class="primary" onclick="createAccount()">إنشاء حساب</button> </div> <div id="orders" style="display:none"> <h4>📦 طلباتي</h4> <div class="card">طلب #1203 – قيد التوصيل</div> <button class="outline" onclick="logout()">تسجيل الخروج</button> </div> </div> </div> <!-- NAV --> <div class="bottom-nav"> <button class="active" onclick="showPage('home',this)">🏠<br>الرئيسية</button> <button onclick="showPage('stores',this)">🏪<br>المتجر</button> <button onclick="showPage('cart',this)">🛒<br>السلة</button> <button onclick="showPage('profile',this)">👤<br>حسابي</button> </div> <script> function showPage(id,btn){ document.querySelectorAll('.page').forEach(p=>p.classList.remove('active')); document.getElementById(id).classList.add('active'); document.querySelectorAll('.bottom-nav button').forEach(b=>b.classList.remove('active')); btn.classList.add('active'); } function togglePass(id,el){ document.getElementById(id).type = el.checked ? "text" : "password"; } function showLogin(){loginForm.style.display="block";registerForm.style.display="none"} function showRegister(){registerForm.style.display="block";loginForm.style.display="none"} function createAccount(){ localStorage.setItem("user",JSON.stringify({ fname:fname.value,lname:lname.value, phone:phone.value,email:email.value,password:password.value })); localStorage.setItem("loggedIn","true"); loadUser(); } function login(){ const u=JSON.parse(localStorage.getItem("user")); if(!u||loginEmail.value!==u.email||loginPass.value!==u.password){ alert("بيانات غير صحيحة");return; } localStorage.setItem("loggedIn","true"); loadUser(); } function loadUser(){ const u=JSON.parse(localStorage.getItem("user")); if(u && localStorage.getItem("loggedIn")==="true"){ userName.innerText=u.fname+" "+u.lname; userStatus.innerText="📞 "+u.phone; actions.style.display="none"; loginForm.style.display="none"; registerForm.style.display="none"; orders.style.display="block"; } } function logout(){localStorage.removeItem("loggedIn");location.reload()} function showInfo(){ const u=JSON.parse(localStorage.getItem("user")); if(u) alert(u.fname+" "+u.lname+"\n"+u.email+"\n"+u.phone); } /* STORE LOGIC */ let selectedCategory=""; function openStoreOptions(cat){ selectedCategory=cat; storeOptions.style.display="block"; independentForm.style.display="none"; storeTitle.innerText="القسم: "+cat; } function linkWithAccount(){ const u=JSON.parse(localStorage.getItem("user")); if(!u){alert("سجل الدخول أولا");return;} localStorage.setItem("store",JSON.stringify({ type:"linked",category:selectedCategory, name:u.fname+" "+u.lname,email:u.email })); alert("تم ربط المتجر بالحساب"); } function openIndependent(){ independentForm.style.display="block"; } function createStore(){ localStorage.setItem("store",JSON.stringify({ type:"independent",category:selectedCategory, name:s_fname.value+" "+s_lname.value, email:s_email.value,password:s_pass.value })); alert("تم إنشاء المتجر المستقل"); } </script> </body> </html>
+
