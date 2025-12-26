@@ -120,7 +120,7 @@ input{
 <div id="profile" class="page active">
   <div class="profile-box">
 
-    <div class="settings" onclick="alert('الإعدادات قيد التطوير')">⚙️</div>
+    <div class="settings" onclick="showInfo()">⚙️</div>
 
     <div class="avatar">👤</div>
     <h3 id="userName">زائر</h3>
@@ -130,6 +130,7 @@ input{
     <div id="registerForm">
       <input id="fname" placeholder="الاسم">
       <input id="lname" placeholder="النسب">
+      <input id="phone" type="tel" placeholder="رقم الهاتف">
       <input id="email" type="email" placeholder="الإيميل">
       <input id="password" type="password" placeholder="كلمة السر">
       <button class="primary" onclick="createAccount()">إنشاء حساب</button>
@@ -169,17 +170,28 @@ input{
 function createAccount(){
   const f = fname.value.trim();
   const l = lname.value.trim();
+  const ph = phone.value.trim();
   const e = email.value.trim();
   const p = password.value.trim();
 
-  if(!f || !l || !e || !p){
+  if(!f || !l || !ph || !e || !p){
     alert("❌ جميع الحقول مطلوبة");
     return;
   }
 
-  const user = {fname:f,lname:l,email:e};
-  localStorage.setItem("user", JSON.stringify(user));
+  if(ph.length < 8){
+    alert("❌ رقم الهاتف غير صحيح");
+    return;
+  }
 
+  const user = {
+    fname: f,
+    lname: l,
+    phone: ph,
+    email: e
+  };
+
+  localStorage.setItem("user", JSON.stringify(user));
   loadUser();
 }
 
@@ -187,7 +199,7 @@ function loadUser(){
   const user = JSON.parse(localStorage.getItem("user"));
   if(user){
     userName.innerText = user.fname + " " + user.lname;
-    userStatus.innerText = "حساب مفعل";
+    userStatus.innerText = "📞 " + user.phone;
     registerForm.style.display = "none";
     orders.style.display = "block";
   }
@@ -196,6 +208,19 @@ function loadUser(){
 function logout(){
   localStorage.removeItem("user");
   location.reload();
+}
+
+function showInfo(){
+  const user = JSON.parse(localStorage.getItem("user"));
+  if(user){
+    alert(
+      "👤 " + user.fname + " " + user.lname +
+      "\n📞 " + user.phone +
+      "\n📧 " + user.email
+    );
+  }else{
+    alert("لم يتم إنشاء حساب بعد");
+  }
 }
 
 loadUser();
