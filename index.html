@@ -20,23 +20,24 @@ input,button{width:100%;padding:10px;margin-top:8px;border-radius:8px;border:1px
 button{border:none;font-weight:bold;cursor:pointer}
 .primary{background:var(--yellow)}
 .outline{background:#fff;border:2px solid var(--yellow)}
-.profile-box{background:#fff;border-radius:16px;padding:20px;position:relative}
-.settings{position:absolute;top:15px;right:15px;font-size:22px;cursor:pointer}
-.avatar{width:90px;height:90px;border-radius:50%;background:#ddd;margin:10px auto;display:flex;align-items:center;justify-content:center;font-size:40px}
-h3,p{text-align:center}
-.bottom-nav{position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid #ddd;display:flex;justify-content:space-around;padding:8px 0}
+.bottom-nav{
+  position:fixed;bottom:0;left:0;right:0;
+  background:#fff;border-top:1px solid #ddd;
+  display:flex;justify-content:space-around;padding:8px 0
+}
 .bottom-nav button{background:none;border:none;font-size:12px}
 .bottom-nav button.active{color:var(--yellow);font-weight:bold}
-.check{display:flex;align-items:center;gap:6px;font-size:14px;color:#555;margin-top:6px}
 </style>
 </head>
+
 <body>
+
 <header>MALL</header>
 
 <!-- HOME -->
 <div id="home" class="page active">
   <div class="card">
-    <input placeholder="🔍 ابحث عن منتج أو متجر">
+    <input placeholder="🔍 ابحث عن منتج">
   </div>
 </div>
 
@@ -46,34 +47,27 @@ h3,p{text-align:center}
 
   <div class="card">
     <h4>🧥 ملابس</h4>
-    <button class="primary" onclick="openStoreOptions('ملابس')">الدخول</button>
+    <button class="primary" onclick="openStore('ملابس')">الدخول</button>
   </div>
 
   <div class="card">
     <h4>💻 إلكترونيات</h4>
-    <button class="primary" onclick="openStoreOptions('إلكترونيات')">الدخول</button>
+    <button class="primary" onclick="openStore('إلكترونيات')">الدخول</button>
+  </div>
+</div>
+
+<!-- PRODUCTS -->
+<div id="products" class="page">
+  <h3 id="storeName"></h3>
+
+  <div id="addProductBox" class="card" style="display:none">
+    <h4>➕ إضافة منتج</h4>
+    <input id="p_name" placeholder="اسم المنتج">
+    <input id="p_price" type="number" placeholder="السعر">
+    <button class="primary" onclick="addProduct()">إضافة</button>
   </div>
 
-  <!-- خيارات الربط -->
-  <div id="storeOptions" class="card" style="display:none">
-    <h4 id="storeTitle"></h4>
-    <button class="outline" onclick="linkWithAccount()">🔗 ربط بالحساب</button>
-    <button class="outline" onclick="openIndependent()">🏪 متجر مستقل</button>
-  </div>
-
-  <!-- نموذج المتجر المستقل -->
-  <div id="independentForm" class="card" style="display:none">
-    <h4>📝 متجر مستقل</h4>
-    <input id="s_fname" placeholder="الاسم">
-    <input id="s_lname" placeholder="النسب">
-    <input id="s_email" type="email" placeholder="الإيميل">
-    <input id="s_pass" type="password" placeholder="كلمة السر">
-    <label class="check">
-      <input type="checkbox" onclick="togglePass('s_pass',this)">
-      👁️ إظهار كلمة السر
-    </label>
-    <button class="primary" onclick="createStore()">إنشاء المتجر</button>
-  </div>
+  <div id="productList"></div>
 </div>
 
 <!-- CART -->
@@ -83,63 +77,15 @@ h3,p{text-align:center}
   <h4 id="total"></h4>
 </div>
 
-<!-- PROFILE -->
-<div id="profile" class="page">
-  <div class="profile-box">
-    <div class="settings" onclick="showInfo()">⚙️</div>
-    <div class="avatar">👤</div>
-
-    <h3 id="userName">مرحبا</h3>
-    <p id="userStatus">يرجى تسجيل الدخول أو إنشاء حساب</p>
-
-    <div id="actions">
-      <button class="primary" onclick="showLogin()">تسجيل الدخول</button>
-      <button class="outline" onclick="showRegister()">إنشاء حساب</button>
-    </div>
-
-    <!-- LOGIN -->
-    <div id="loginForm" style="display:none">
-      <input id="loginEmail" type="email" placeholder="الإيميل">
-      <input id="loginPass" type="password" placeholder="كلمة السر">
-      <label class="check">
-        <input type="checkbox" onclick="togglePass('loginPass',this)">
-        إظهار كلمة المرور
-      </label>
-      <button class="primary" onclick="login()">دخول</button>
-    </div>
-
-    <!-- REGISTER -->
-    <div id="registerForm" style="display:none">
-      <input id="fname" placeholder="الاسم">
-      <input id="lname" placeholder="النسب">
-      <input id="phone" placeholder="رقم الهاتف">
-      <input id="email" type="email" placeholder="الإيميل">
-      <input id="password" type="password" placeholder="كلمة السر">
-      <label class="check">
-        <input type="checkbox" onclick="togglePass('password',this)">
-        إظهار كلمة المرور
-      </label>
-      <button class="primary" onclick="createAccount()">إنشاء حساب</button>
-    </div>
-
-    <div id="orders" style="display:none">
-      <h4>📦 طلباتي</h4>
-      <div class="card">طلب #1203 – قيد التوصيل</div>
-      <button class="outline" onclick="logout()">تسجيل الخروج</button>
-    </div>
-  </div>
-</div>
-
 <!-- NAV -->
 <div class="bottom-nav">
   <button class="active" onclick="showPage('home',this)">🏠<br>الرئيسية</button>
   <button onclick="showPage('stores',this)">🏪<br>المتجر</button>
   <button onclick="showPage('cart',this)">🛒<br>السلة</button>
-  <button onclick="showPage('profile',this)">👤<br>حسابي</button>
 </div>
 
 <script>
-/* NAVIGATION */
+/* NAV */
 function showPage(id,btn){
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
   document.getElementById(id).classList.add('active');
@@ -147,132 +93,78 @@ function showPage(id,btn){
   btn.classList.add('active');
 }
 
-/* PASSWORD TOGGLE */
-function togglePass(id,el){
-  document.getElementById(id).type = el.checked ? "text" : "password";
-}
-
-/* LOGIN / REGISTER */
-function showLogin(){loginForm.style.display="block";registerForm.style.display="none"}
-function showRegister(){registerForm.style.display="block";loginForm.style.display="none"}
-
-function createAccount(){
-  localStorage.setItem("user",JSON.stringify({
-    fname:fname.value,
-    lname:lname.value,
-    phone:phone.value,
-    email:email.value,
-    password:password.value
-  }));
-  localStorage.setItem("loggedIn","true");
-  loadUser();
-}
-
-function login(){
-  const u=JSON.parse(localStorage.getItem("user"));
-  if(!u || loginEmail.value!==u.email || loginPass.value!==u.password){
-    alert("بيانات غير صحيحة");return;
-  }
-  localStorage.setItem("loggedIn","true");
-  loadUser();
-}
-
-function loadUser(){
-  const u=JSON.parse(localStorage.getItem("user"));
-  if(u && localStorage.getItem("loggedIn")==="true"){
-    userName.innerText=u.fname+" "+u.lname;
-    userStatus.innerText="📞 "+u.phone;
-    actions.style.display="none";
-    loginForm.style.display="none";
-    registerForm.style.display="none";
-    orders.style.display="block";
-  }
-}
-
-function logout(){
-  localStorage.removeItem("loggedIn");
-  location.reload();
-}
-
-function showInfo(){
-  const u=JSON.parse(localStorage.getItem("user"));
-  if(u) alert(u.fname+" "+u.lname+"\n"+u.email+"\n"+u.phone);
-}
-
-/* STORE LOGIC */
-let selectedCategory="";
-function openStoreOptions(cat){
-  selectedCategory = cat;
-  storeOptions.style.display = "block";
-  independentForm.style.display = "none";
-  storeTitle.innerText = "القسم: "+cat;
-}
-
-function linkWithAccount(){
-  const u = JSON.parse(localStorage.getItem("user"));
-  if(!u){alert("يجب تسجيل الدخول أولا");return;}
-  localStorage.setItem("store",JSON.stringify({
-    type:"linked",
-    category:selectedCategory,
-    name:u.fname+" "+u.lname,
-    email:u.email
-  }));
-  alert("تم ربط المتجر بالحساب");
-  // الانتقال مباشرة إلى صفحة المتجر
-  showPage('stores', document.querySelector(".bottom-nav button:nth-child(2)"));
-}
-
-function openIndependent(){
-  independentForm.style.display="block";
-}
-
-function createStore(){
-  if(!s_fname.value || !s_email.value || !s_pass.value){
-    alert("يرجى ملء جميع الحقول");return;
-  }
-  localStorage.setItem("store",JSON.stringify({
-    type:"independent",
-    category:selectedCategory,
-    name:s_fname.value+" "+s_lname.value,
-    email:s_email.value,
-    password:s_pass.value
-  }));
-  alert("تم إنشاء المتجر المستقل بنجاح");
-  // الانتقال مباشرة إلى صفحة المتجر
-  showPage('stores', document.querySelector(".bottom-nav button:nth-child(2)"));
-}
-
-/* CART LOGIC */
+/* STORE + PRODUCTS */
+let currentCategory="";
+let products = JSON.parse(localStorage.getItem("products")) || [];
 let cart = JSON.parse(localStorage.getItem("cart")) || [];
-function addToCart(name,price){
-  cart.push({name,price});
-  localStorage.setItem("cart",JSON.stringify(cart));
-  alert("تمت الإضافة للسلة");
-  renderCart();
+
+function openStore(cat){
+  currentCategory = cat;
+  storeName.innerText = "منتجات " + cat;
+  showPage('products', document.querySelector(".bottom-nav button:nth-child(2)"));
+
+  const store = JSON.parse(localStorage.getItem("store"));
+  addProductBox.style.display = store ? "block" : "none";
+
+  renderProducts();
 }
-function renderCart(){
-  const box=document.getElementById("cartItems");
-  if(!box) return;
-  box.innerHTML="";
-  let sum=0;
-  cart.forEach((i,idx)=>{
-    sum+=i.price;
-    box.innerHTML+=`
+
+function addProduct(){
+  if(!p_name.value || !p_price.value) return alert("أكمل الحقول");
+
+  products.push({
+    name:p_name.value,
+    price:Number(p_price.value),
+    category:currentCategory
+  });
+
+  localStorage.setItem("products", JSON.stringify(products));
+  p_name.value=""; p_price.value="";
+  renderProducts();
+}
+
+function renderProducts(){
+  productList.innerHTML="";
+  products.filter(p=>p.category===currentCategory)
+  .forEach((p,i)=>{
+    productList.innerHTML+=`
       <div class="card">
-        ${i.name} - ${i.price} درهم
-        <button onclick="removeItem(${idx})">❌</button>
+        <b>${p.name}</b><br>
+        السعر: ${p.price} درهم
+        <button class="primary" onclick="addToCart('${p.name}',${p.price})">أضف للسلة</button>
       </div>`;
   });
-  document.getElementById("total").innerText="المجموع: "+sum+" درهم";
 }
+
+/* CART */
+function addToCart(name,price){
+  cart.push({name,price});
+  localStorage.setItem("cart", JSON.stringify(cart));
+  renderCart();
+  alert("تمت الإضافة للسلة");
+}
+
+function renderCart(){
+  cartItems.innerHTML="";
+  let sum=0;
+  cart.forEach((c,i)=>{
+    sum+=c.price;
+    cartItems.innerHTML+=`
+      <div class="card">
+        ${c.name} - ${c.price} درهم
+        <button onclick="removeItem(${i})">❌</button>
+      </div>`;
+  });
+  total.innerText="المجموع: "+sum+" درهم";
+}
+
 function removeItem(i){
   cart.splice(i,1);
-  localStorage.setItem("cart",JSON.stringify(cart));
+  localStorage.setItem("cart", JSON.stringify(cart));
   renderCart();
 }
 
 renderCart();
-loadUser();
 </script>
 
 </body>
