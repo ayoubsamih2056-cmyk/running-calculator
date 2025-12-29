@@ -25,6 +25,7 @@ input,select,button{
 }
 button{border:none;font-weight:bold;cursor:pointer}
 .primary{background:var(--yellow)}
+.primary:disabled{opacity:.5}
 .outline{background:#fff;border:2px solid var(--yellow)}
 .bottom-nav{
   position:fixed;bottom:0;left:0;right:0;
@@ -33,6 +34,7 @@ button{border:none;font-weight:bold;cursor:pointer}
 }
 .bottom-nav button{background:none;border:none;font-size:12px}
 .bottom-nav button.active{color:var(--yellow);font-weight:bold}
+img{max-width:100%;border-radius:8px;margin-top:5px}
 </style>
 </head>
 
@@ -73,15 +75,17 @@ button{border:none;font-weight:bold;cursor:pointer}
     <input id="p_name" placeholder="اسم المنتج">
     <input id="p_price" type="number" placeholder="السعر">
 
-    <!-- تحديد العملة -->
     <select id="p_currency">
-      <option value="MAD">درهم مغربي (MAD)</option>
+      <option value="MAD">درهم (MAD)</option>
       <option value="USD">دولار (USD)</option>
       <option value="EUR">يورو (EUR)</option>
     </select>
 
-    <!-- عدد الصور -->
-    <input id="p_images" type="number" min="1" max="10" placeholder="عدد الصور">
+    <!-- الكمية المتبقية -->
+    <input id="p_stock" type="number" min="1" placeholder="الكمية المتوفرة">
+
+    <!-- إضافة الصور -->
+    <input id="p_images" type="file" multiple accept="image/*">
 
     <button class="primary" onclick="addProduct()">إضافة المنتج</button>
   </div>
@@ -104,7 +108,7 @@ button{border:none;font-weight:bold;cursor:pointer}
 </div>
 
 <script>
-/* NAVIGATION */
+/* NAV */
 function showPage(id,btn){
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
   document.getElementById(id).classList.add('active');
@@ -112,11 +116,12 @@ function showPage(id,btn){
   btn.classList.add('active');
 }
 
-/* STORE + PRODUCTS */
+/* DATA */
 let currentCategory="";
 let products = JSON.parse(localStorage.getItem("products")) || [];
 let cart = JSON.parse(localStorage.getItem("cart")) || [];
 
+/* OPEN STORE */
 function openStore(cat){
   currentCategory = cat;
   storeName.innerText = "منتجات " + cat;
@@ -124,17 +129,24 @@ function openStore(cat){
   renderProducts();
 }
 
+/* ADD PRODUCT */
 function addProduct(){
-  if(!p_name.value || !p_price.value || !p_images.value){
+  if(!p_name.value || !p_price.value || !p_stock.value){
     alert("يرجى ملء جميع الحقول");
     return;
+  }
+
+  const images = [];
+  for(let file of p_images.files){
+    images.push(URL.createObjectURL(file));
   }
 
   products.push({
     name: p_name.value,
     price: Number(p_price.value),
     currency: p_currency.value,
-    images: Number(p_images.value),
+    stock: Number(p_stock.value),
+    images,
     category: currentCategory
   });
 
@@ -142,11 +154,13 @@ function addProduct(){
 
   p_name.value="";
   p_price.value="";
+  p_stock.value="";
   p_images.value="";
 
   renderProducts();
 }
 
+/* RENDER PRODUCTS */
 function renderProducts(){
   productList.innerHTML="";
   products
@@ -156,10 +170,14 @@ function renderProducts(){
         <div class="card">
           <b>${p.name}</b><br>
           السعر: ${p.price} ${p.currency}<br>
-          عدد الصور: ${p.images}
+          الكمية المتبقية: ${p.stock}<br>
+
+          ${p.images.map(img=>`<img src="${img}">`).join("")}
+
           <button class="primary"
-            onclick="addToCart('${p.name}',${p.price},'${p.currency}')">
-            أضف للسلة
+            ${p.stock<=0?"disabled":""}
+            onclick="addToCart(${i})">
+            ${p.stock<=0?"نفد المخزون":"أضف للسلة"}
           </button>
         </div>
       `;
@@ -167,9 +185,20 @@ function renderProducts(){
 }
 
 /* CART */
-function addToCart(name,price,currency){
-  cart.push({name,price,currency});
+function addToCart(index){
+  if(products[index].stock<=0) return;
+
+  products[index].stock--;
+  cart.push({
+    name:products[index].name,
+    price:products[index].price,
+    currency:products[index].currency
+  });
+
+  localStorage.setItem("products", JSON.stringify(products));
   localStorage.setItem("cart", JSON.stringify(cart));
+
+  renderProducts();
   renderCart();
 }
 
@@ -199,3 +228,4 @@ renderCart();
 
 </body>
 </html>
+
