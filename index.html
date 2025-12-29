@@ -15,8 +15,14 @@ body{margin:0;background:var(--gray);padding-bottom:70px}
 header{background:var(--black);color:#fff;padding:14px;text-align:center;font-weight:bold}
 .page{display:none;padding:15px}
 .page.active{display:block}
-.card{background:#fff;padding:15px;border-radius:14px;margin-bottom:15px;box-shadow:0 4px 10px rgba(0,0,0,.08)}
-input,button{width:100%;padding:10px;margin-top:8px;border-radius:8px;border:1px solid #ccc}
+.card{
+  background:#fff;padding:15px;border-radius:14px;
+  margin-bottom:15px;box-shadow:0 4px 10px rgba(0,0,0,.08)
+}
+input,select,button{
+  width:100%;padding:10px;margin-top:8px;
+  border-radius:8px;border:1px solid #ccc
+}
 button{border:none;font-weight:bold;cursor:pointer}
 .primary{background:var(--yellow)}
 .outline{background:#fff;border:2px solid var(--yellow)}
@@ -60,11 +66,24 @@ button{border:none;font-weight:bold;cursor:pointer}
 <div id="products" class="page">
   <h3 id="storeName"></h3>
 
-  <div id="addProductBox" class="card" style="display:none">
+  <!-- ADD PRODUCT -->
+  <div id="addProductBox" class="card">
     <h4>➕ إضافة منتج</h4>
+
     <input id="p_name" placeholder="اسم المنتج">
     <input id="p_price" type="number" placeholder="السعر">
-    <button class="primary" onclick="addProduct()">إضافة</button>
+
+    <!-- تحديد العملة -->
+    <select id="p_currency">
+      <option value="MAD">درهم مغربي (MAD)</option>
+      <option value="USD">دولار (USD)</option>
+      <option value="EUR">يورو (EUR)</option>
+    </select>
+
+    <!-- عدد الصور -->
+    <input id="p_images" type="number" min="1" max="10" placeholder="عدد الصور">
+
+    <button class="primary" onclick="addProduct()">إضافة المنتج</button>
   </div>
 
   <div id="productList"></div>
@@ -85,7 +104,7 @@ button{border:none;font-weight:bold;cursor:pointer}
 </div>
 
 <script>
-/* NAV */
+/* NAVIGATION */
 function showPage(id,btn){
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
   document.getElementById(id).classList.add('active');
@@ -102,46 +121,56 @@ function openStore(cat){
   currentCategory = cat;
   storeName.innerText = "منتجات " + cat;
   showPage('products', document.querySelector(".bottom-nav button:nth-child(2)"));
-
-  const store = JSON.parse(localStorage.getItem("store"));
-  addProductBox.style.display = store ? "block" : "none";
-
   renderProducts();
 }
 
 function addProduct(){
-  if(!p_name.value || !p_price.value) return alert("أكمل الحقول");
+  if(!p_name.value || !p_price.value || !p_images.value){
+    alert("يرجى ملء جميع الحقول");
+    return;
+  }
 
   products.push({
-    name:p_name.value,
-    price:Number(p_price.value),
-    category:currentCategory
+    name: p_name.value,
+    price: Number(p_price.value),
+    currency: p_currency.value,
+    images: Number(p_images.value),
+    category: currentCategory
   });
 
   localStorage.setItem("products", JSON.stringify(products));
-  p_name.value=""; p_price.value="";
+
+  p_name.value="";
+  p_price.value="";
+  p_images.value="";
+
   renderProducts();
 }
 
 function renderProducts(){
   productList.innerHTML="";
-  products.filter(p=>p.category===currentCategory)
-  .forEach((p,i)=>{
-    productList.innerHTML+=`
-      <div class="card">
-        <b>${p.name}</b><br>
-        السعر: ${p.price} درهم
-        <button class="primary" onclick="addToCart('${p.name}',${p.price})">أضف للسلة</button>
-      </div>`;
-  });
+  products
+    .filter(p=>p.category===currentCategory)
+    .forEach((p,i)=>{
+      productList.innerHTML+=`
+        <div class="card">
+          <b>${p.name}</b><br>
+          السعر: ${p.price} ${p.currency}<br>
+          عدد الصور: ${p.images}
+          <button class="primary"
+            onclick="addToCart('${p.name}',${p.price},'${p.currency}')">
+            أضف للسلة
+          </button>
+        </div>
+      `;
+    });
 }
 
 /* CART */
-function addToCart(name,price){
-  cart.push({name,price});
+function addToCart(name,price,currency){
+  cart.push({name,price,currency});
   localStorage.setItem("cart", JSON.stringify(cart));
   renderCart();
-  alert("تمت الإضافة للسلة");
 }
 
 function renderCart(){
@@ -151,11 +180,12 @@ function renderCart(){
     sum+=c.price;
     cartItems.innerHTML+=`
       <div class="card">
-        ${c.name} - ${c.price} درهم
+        ${c.name} - ${c.price} ${c.currency}
         <button onclick="removeItem(${i})">❌</button>
-      </div>`;
+      </div>
+    `;
   });
-  total.innerText="المجموع: "+sum+" درهم";
+  total.innerText="المجموع: "+sum;
 }
 
 function removeItem(i){
